@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Parent Portal – St. Francis School</title>
+<link rel="stylesheet" href="style.css"/>
+<link rel="icon" href="PICS/LOGO.jpg" type="image/jpeg"/>
+<style>
+body{background:#f0f2f8;}
+.dash-layout{display:flex;min-height:100vh;}
+.sidebar{width:240px;background:linear-gradient(180deg,#0d2b1e 0%,#0a1f15 100%);min-height:100vh;position:fixed;top:0;left:0;z-index:100;display:flex;flex-direction:column;border-right:2px solid var(--gold);}
+.sidebar-brand{padding:22px 18px;border-bottom:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;gap:10px;}
+.sidebar-brand img{width:42px;height:42px;border-radius:50%;border:2px solid var(--gold);}
+.sidebar-brand .t{font-family:'Playfair Display',serif;font-size:0.85rem;color:var(--white);line-height:1.3;}
+.sidebar-brand .t span{display:block;color:var(--gold);font-size:0.62rem;letter-spacing:2px;font-family:'Inter',sans-serif;font-weight:600;}
+.sidebar-menu{flex:1;padding:16px 10px;}
+.menu-label{color:rgba(255,255,255,0.3);font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:0 10px;margin:14px 0 6px;}
+.menu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,0.65);font-size:0.85rem;font-weight:500;cursor:pointer;transition:var(--transition);margin-bottom:3px;}
+.menu-item:hover,.menu-item.active{background:rgba(201,168,76,0.12);color:var(--gold);}
+.menu-item .icon{font-size:1rem;width:20px;text-align:center;}
+.sidebar-footer{padding:14px 10px;border-top:1px solid rgba(201,168,76,0.15);}
+.logout-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,0.5);font-size:0.85rem;cursor:pointer;transition:var(--transition);}
+.logout-btn:hover{color:#ff6b6b;background:rgba(192,57,43,0.1);}
+.main-content{margin-left:240px;flex:1;}
+.topbar{background:var(--white);border-bottom:1px solid var(--light-gray);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+.topbar h2{font-size:1.2rem;color:var(--navy);}
+.parent-badge{background:linear-gradient(135deg,#0d2b1e,#1a4a30);color:var(--white);font-size:0.78rem;font-weight:700;padding:6px 14px;border-radius:20px;}
+.page{padding:28px;display:none;}
+.page.active{display:block;}
+.student-profile{background:linear-gradient(135deg,var(--navy),#1a3a7c);border-radius:var(--radius-lg);padding:28px;display:flex;align-items:center;gap:24px;margin-bottom:24px;box-shadow:var(--shadow-lg);}
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:rgba(201,168,76,0.2);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:2.5rem;flex-shrink:0;}
+.profile-info h2{color:var(--white);font-size:1.3rem;margin-bottom:4px;}
+.profile-info p{color:rgba(255,255,255,0.65);font-size:0.85rem;}
+.profile-meta{margin-left:auto;display:flex;gap:20px;}
+.meta-item{text-align:center;}
+.meta-item .mv{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold);font-weight:700;}
+.meta-item .ml{font-size:0.7rem;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;}
+.card{background:var(--white);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow);margin-bottom:22px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.card-header h3{font-size:1.05rem;color:var(--navy);}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--off-white);color:var(--navy);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--light-gray);}
+td{padding:11px 14px;font-size:0.875rem;color:var(--gray);border-bottom:1px solid var(--light-gray);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafbff;color:var(--navy);}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:700;}
+.badge-green{background:#d4edda;color:#155724;}
+.badge-red{background:#f8d7da;color:#721c24;}
+.badge-gold{background:rgba(201,168,76,0.15);color:var(--gold-dark);}
+.badge-blue{background:#d1ecf1;color:#0c5460;}
+.att-bar{width:100%;height:10px;background:var(--light-gray);border-radius:5px;overflow:hidden;margin-top:4px;}
+.att-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),var(--gold-light));}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
+.stat-box{background:var(--white);border-radius:var(--radius);padding:18px;border-left:4px solid var(--gold);box-shadow:var(--shadow);}
+.stat-box .sb-num{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:var(--navy);}
+.stat-box .sb-label{color:var(--gray);font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;}
+/* CALL TEACHER */
+.teacher-card{background:var(--off-white);border-radius:var(--radius);padding:18px;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--light-gray);margin-bottom:14px;transition:var(--transition);}
+.teacher-card:hover{border-color:var(--gold);box-shadow:var(--shadow);}
+.tc-info{display:flex;align-items:center;gap:14px;}
+.tc-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--navy),#1a3a7c);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:white;}
+.tc-name{font-weight:600;color:var(--navy);font-size:0.95rem;}
+.tc-sub{font-size:0.8rem;color:var(--gray);}
+.btn-call{padding:9px 20px;border:none;border-radius:20px;background:linear-gradient(135deg,#27ae60,#1e8449);color:white;font-weight:700;font-size:0.82rem;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:6px;}
+.btn-call:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(39,174,96,0.35);}
+/* REMARKS */
+.remark-item{background:var(--off-white);border-radius:var(--radius);padding:16px 18px;border-left:4px solid var(--gold);margin-bottom:12px;}
+.remark-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.remark-teacher{font-weight:600;color:var(--navy);font-size:0.9rem;}
+.remark-date{font-size:0.78rem;color:var(--gray);}
+.remark-text{color:var(--gray);font-size:0.875rem;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="dash-layout">
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <img src="PICS/LOGO.jpg" alt="Logo"/>
+    <div class="t">ST. FRANCIS<span>Parent Portal</span></div>
+  </div>
+  <div class="sidebar-menu">
+    <div class="menu-label">My Child</div>
+    <div class="menu-item active" onclick="showPage('overview',this)"><span class="icon">🏠</span> Overview</div>
+    <div class="menu-item" onclick="showPage('details',this)"><span class="icon">👤</span> Student Details</div>
+    <div class="menu-item" onclick="showPage('attendance',this)"><span class="icon">📅</span> Attendance</div>
+    <div class="menu-item" onclick="showPage('marks',this)"><span class="icon">📊</span> Marks & Results</div>
+    <div class="menu-item" onclick="showPage('remarks',this)"><span class="icon">💬</span> Remarks</div>
+    <div class="menu-item" onclick="showPage('callteacher',this)"><span class="icon">📞</span> Call Teacher</div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="logout-btn" onclick="logout()"><span>🚪</span> Logout</div>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="topbar">
+    <h2 id="pageTitle">Parent Overview</h2>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <span style="color:var(--gray);font-size:0.83rem;" id="dateStr"></span>
+      <div class="parent-badge">👨‍👩‍👧 PARENT</div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="page active" id="page-overview">
+    <div class="student-profile">
+      <div class="profile-avatar">👩‍🎓</div>
+      <div class="profile-info">
+        <h2>Priya Sharma</h2>
+        <p>Class X – A &nbsp;|&nbsp; Roll No: SA001 &nbsp;|&nbsp; CBSE Board</p>
+        <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin-top:4px;">St. Francis School, Deoghar &nbsp;|&nbsp; Academic Year 2025–26</p>
+      </div>
+      <div class="profile-meta">
+        <div class="meta-item"><div class="mv">98%</div><div class="ml">Attendance</div></div>
+        <div class="meta-item"><div class="mv">95.4%</div><div class="ml">Avg Marks</div></div>
+        <div class="meta-item"><div class="mv">#1</div><div class="ml">Class Rank</div></div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="sb-num">98%</div><div class="sb-label">Attendance</div></div>
+      <div class="stat-box" style="border-color:#27ae60"><div class="sb-num">95.4%</div><div class="sb-label">Average Marks</div></div>
+      <div class="stat-box" style="border-color:#2980b9"><div class="sb-num">A+</div><div class="sb-label">Current Grade</div></div>
+      <div class="stat-box" style="border-color:#8e44ad"><div class="sb-num">2</div><div class="sb-label">New Remarks</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3>Recent Activity</h3></div>
+      <table>
+        <tr><th>Date</th><th>Subject</th><th>Activity</th><th>Score</th><th>Status</th></tr>
+        <tr><td>May 15</td><td>Physics</td><td>Unit Test</td><td>95/100</td><td><span class="badge badge-green">Excellent</span></td></tr>
+        <tr><td>May 12</td><td>Mathematics</td><td>Class Test</td><td>48/50</td><td><span class="badge badge-green">Excellent</span></td></tr>
+        <tr><td>May 10</td><td>English</td><td>Essay Writing</td><td>19/20</td><td><span class="badge badge-green">Very Good</span></td></tr>
+        <tr><td>May 8</td><td>Chemistry</td><td>Lab Practical</td><td>28/30</td><td><span class="badge badge-gold">Good</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- DETAILS -->
+  <div class="page" id="page-details">
+    <div class="card">
+      <div class="card-header"><h3>Student Information</h3></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div>
+          <table>
+            <tr><th colspan="2">Personal Details</th></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">Full Name</td><td>Priya Sharma</td></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">Date of Birth</td><td>March 15, 2011</td></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">Gender</td><td>Female</td></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">Blood Group</td><td>O+</td></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">Admission No</td><td>SFS/2019/SA001</td></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">Roll Number</td><td>SA001</td></tr>
+          </table>
+        </div>
+        <div>
+          <table>
+            <tr><th colspan="2">Academic Details</th></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">Class</td><td>X – A</td></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">Section</td><td>A</td></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">Class Teacher</td><td>Mr. Rajesh Kumar</td></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">House</td><td>Francis House (Blue)</td></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">Board</td><td>CBSE</td></tr>
+            <tr><td style="font-weight:600;color:var(--navy);">Medium</td><td>English</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ATTENDANCE -->
+  <div class="page" id="page-attendance">
+    <div class="card">
+      <div class="card-header"><h3>Attendance Summary – 2025-26</h3></div>
+      <table>
+        <tr><th>Month</th><th>Total Days</th><th>Present</th><th>Absent</th><th>%</th><th>Status</th></tr>
+        <tr><td>January</td><td>24</td><td>24</td><td>0</td><td><div>100%<div class="att-bar"><div class="att-bar-fill" style="width:100%"></div></div></div></td><td><span class="badge badge-green">Full</span></td></tr>
+        <tr><td>February</td><td>20</td><td>19</td><td>1</td><td><div>95%<div class="att-bar"><div class="att-bar-fill" style="width:95%"></div></div></div></td><td><span class="badge badge-green">Good</span></td></tr>
+        <tr><td>March</td><td>22</td><td>22</td><td>0</td><td><div>100%<div class="att-bar"><div class="att-bar-fill" style="width:100%"></div></div></div></td><td><span class="badge badge-green">Full</span></td></tr>
+        <tr><td>April</td><td>20</td><td>19</td><td>1</td><td><div>95%<div class="att-bar"><div class="att-bar-fill" style="width:95%"></div></div></div></td><td><span class="badge badge-green">Good</span></td></tr>
+        <tr><td>May</td><td>12</td><td>12</td><td>0</td><td><div>100%<div class="att-bar"><div class="att-bar-fill" style="width:100%"></div></div></div></td><td><span class="badge badge-green">Full</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- MARKS -->
+  <div class="page" id="page-marks">
+    <div class="card">
+      <div class="card-header"><h3>Unit Test 1 Results</h3><span class="badge badge-green">Class Rank: #1</span></div>
+      <table>
+        <tr><th>Subject</th><th>Max Marks</th><th>Obtained</th><th>Grade</th><th>Remarks</th></tr>
+        <tr><td>English</td><td>100</td><td>96</td><td><span class="badge badge-green">A+</span></td><td>Outstanding</td></tr>
+        <tr><td>Mathematics</td><td>100</td><td>98</td><td><span class="badge badge-green">A+</span></td><td>Excellent</td></tr>
+        <tr><td>Physics</td><td>100</td><td>95</td><td><span class="badge badge-green">A+</span></td><td>Excellent</td></tr>
+        <tr><td>Chemistry</td><td>100</td><td>93</td><td><span class="badge badge-green">A+</span></td><td>Very Good</td></tr>
+        <tr><td>Biology</td><td>100</td><td>94</td><td><span class="badge badge-green">A+</span></td><td>Very Good</td></tr>
+        <tr><td style="font-weight:700;color:var(--navy);">Total</td><td style="font-weight:700;">500</td><td style="font-weight:700;color:var(--navy);">476</td><td><span class="badge badge-green">A+</span></td><td style="font-weight:600;color:var(--gold-dark);">95.2%</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- REMARKS -->
+  <div class="page" id="page-remarks">
+    <div class="card">
+      <div class="card-header"><h3>Teacher Remarks</h3></div>
+      <div class="remark-item">
+        <div class="remark-header">
+          <div class="remark-teacher">Mr. Rajesh Kumar &nbsp;<span class="badge badge-green">Academic</span></div>
+          <div class="remark-date">May 14, 2026</div>
+        </div>
+        <div class="remark-text">Priya has shown outstanding performance in Physics Unit Test 1. Her understanding of concepts is excellent. Encourage her to continue this momentum.</div>
+      </div>
+      <div class="remark-item" style="border-left-color:#27ae60;">
+        <div class="remark-header">
+          <div class="remark-teacher">Ms. Preethi Nair &nbsp;<span class="badge badge-blue">Co-curricular</span></div>
+          <div class="remark-date">May 10, 2026</div>
+        </div>
+        <div class="remark-text">Priya actively participated in the annual debate competition and delivered a confident speech. She is a natural orator. Well done!</div>
+      </div>
+      <div class="remark-item" style="border-left-color:#2980b9;">
+        <div class="remark-header">
+          <div class="remark-teacher">Mr. Anil Mishra &nbsp;<span class="badge badge-green">Academic</span></div>
+          <div class="remark-date">May 5, 2026</div>
+        </div>
+        <div class="remark-text">Excellent work in Mathematics. Priya solved all complex problems accurately. She is one of the top performers in the class.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALL TEACHER -->
+  <div class="page" id="page-callteacher">
+    <div class="card">
+      <div class="card-header"><h3>Contact Teachers</h3></div>
+      <p style="color:var(--gray);font-size:0.875rem;margin-bottom:20px;">You can call or message your child's teachers directly through the portal.</p>
+      <div class="teacher-card">
+        <div class="tc-info"><div class="tc-avatar">👨</div><div><div class="tc-name">Mr. Rajesh Kumar</div><div class="tc-sub">Physics &amp; Class Teacher (X-A)</div></div></div>
+        <button class="btn-call" onclick="callTeacher('Mr. Rajesh Kumar')">📞 Call Now</button>
+      </div>
+      <div class="teacher-card">
+        <div class="tc-info"><div class="tc-avatar">👩</div><div><div class="tc-name">Ms. Preethi Nair</div><div class="tc-sub">English Teacher</div></div></div>
+        <button class="btn-call" onclick="callTeacher('Ms. Preethi Nair')">📞 Call Now</button>
+      </div>
+      <div class="teacher-card">
+        <div class="tc-info"><div class="tc-avatar">👨</div><div><div class="tc-name">Mr. Anil Mishra</div><div class="tc-sub">Mathematics Teacher</div></div></div>
+        <button class="btn-call" onclick="callTeacher('Mr. Anil Mishra')">📞 Call Now</button>
+      </div>
+      <div class="teacher-card">
+        <div class="tc-info"><div class="tc-avatar">👩</div><div><div class="tc-name">Ms. Ritu Sinha</div><div class="tc-sub">Chemistry Teacher</div></div></div>
+        <button class="btn-call" onclick="callTeacher('Ms. Ritu Sinha')">📞 Call Now</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3>Send Message to Teacher</h3></div>
+      <div class="form-group" style="margin-bottom:14px;"><label style="display:block;font-size:0.82rem;font-weight:600;color:var(--navy);margin-bottom:6px;">Select Teacher</label>
+        <select style="width:100%;border:1px solid var(--light-gray);border-radius:8px;padding:9px 12px;font-size:0.875rem;font-family:'Inter',sans-serif;color:var(--navy);" id="msgTeacher">
+          <option>Mr. Rajesh Kumar (Physics)</option><option>Ms. Preethi Nair (English)</option><option>Mr. Anil Mishra (Mathematics)</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:14px;"><label style="display:block;font-size:0.82rem;font-weight:600;color:var(--navy);margin-bottom:6px;">Message</label>
+        <textarea id="msgText" rows="4" placeholder="Type your message to the teacher..." style="width:100%;border:1px solid var(--light-gray);border-radius:8px;padding:9px 12px;font-size:0.875rem;font-family:'Inter',sans-serif;color:var(--navy);resize:vertical;"></textarea>
+      </div>
+      <button style="padding:10px 24px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--navy);font-weight:700;font-size:0.9rem;cursor:pointer;" onclick="sendMsg()">Send Message ✉️</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// Auth: role stored by login page
+document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles={overview:'Parent Overview',details:'Student Details',attendance:'Attendance Record',marks:'Marks & Results',remarks:'Teacher Remarks',callteacher:'Call Teacher'};
+  document.getElementById('pageTitle').textContent=titles[id]||id;
+}
+
+function callTeacher(name){alert(`📞 Connecting you to ${name}...\n\nIn a live system, this would initiate a call or show the contact number.`);}
+function sendMsg(){
+  const msg=document.getElementById('msgText').value;
+  if(!msg){alert('Please write a message.');return;}
+  alert('Message sent successfully to the teacher!');
+  document.getElementById('msgText').value='';
+}
+function logout(){localStorage.removeItem('sfs_role');window.location.href='login.html';}
+</script>
+</body>
+</html>

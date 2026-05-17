@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Teacher Portal – St. Francis School</title>
+<link rel="stylesheet" href="style.css"/>
+<link rel="icon" href="PICS/LOGO.jpg" type="image/jpeg"/>
+<style>
+body{background:#f0f2f8;}
+.dash-layout{display:flex;min-height:100vh;}
+.sidebar{width:240px;background:linear-gradient(180deg,#1a3a7c 0%,var(--navy) 100%);min-height:100vh;position:fixed;top:0;left:0;z-index:100;display:flex;flex-direction:column;border-right:2px solid var(--gold);}
+.sidebar-brand{padding:22px 18px;border-bottom:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;gap:10px;}
+.sidebar-brand img{width:42px;height:42px;border-radius:50%;border:2px solid var(--gold);}
+.sidebar-brand .t{font-family:'Playfair Display',serif;font-size:0.85rem;color:var(--white);line-height:1.3;}
+.sidebar-brand .t span{display:block;color:var(--gold);font-size:0.62rem;letter-spacing:2px;font-family:'Inter',sans-serif;font-weight:600;}
+.sidebar-menu{flex:1;padding:16px 10px;}
+.menu-label{color:rgba(255,255,255,0.3);font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:0 10px;margin:14px 0 6px;}
+.menu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,0.65);font-size:0.85rem;font-weight:500;cursor:pointer;transition:var(--transition);margin-bottom:3px;}
+.menu-item:hover,.menu-item.active{background:rgba(201,168,76,0.12);color:var(--gold);}
+.menu-item .icon{font-size:1rem;width:20px;text-align:center;}
+.sidebar-footer{padding:14px 10px;border-top:1px solid rgba(201,168,76,0.15);}
+.logout-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,0.5);font-size:0.85rem;cursor:pointer;transition:var(--transition);}
+.logout-btn:hover{color:#ff6b6b;background:rgba(192,57,43,0.1);}
+.main-content{margin-left:240px;flex:1;}
+.topbar{background:var(--white);border-bottom:1px solid var(--light-gray);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+.topbar h2{font-size:1.2rem;color:var(--navy);}
+.teacher-badge{background:linear-gradient(135deg,#1a3a7c,var(--navy));color:var(--white);font-size:0.78rem;font-weight:700;padding:6px 14px;border-radius:20px;}
+.page{padding:28px;display:none;}
+.page.active{display:block;}
+.card{background:var(--white);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow);margin-bottom:22px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.card-header h3{font-size:1.05rem;color:var(--navy);}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--off-white);color:var(--navy);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--light-gray);}
+td{padding:11px 14px;font-size:0.875rem;color:var(--gray);border-bottom:1px solid var(--light-gray);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafbff;color:var(--navy);}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:700;}
+.badge-green{background:#d4edda;color:#155724;}
+.badge-red{background:#f8d7da;color:#721c24;}
+.badge-gold{background:rgba(201,168,76,0.15);color:var(--gold-dark);}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:0.8rem;font-weight:600;color:var(--navy);margin-bottom:5px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid var(--light-gray);border-radius:8px;padding:9px 12px;font-size:0.875rem;font-family:'Inter',sans-serif;color:var(--navy);transition:var(--transition);}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.12);}
+.form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.btn-sm{padding:8px 18px;border:none;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--transition);}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--navy);}
+.btn-navy{background:var(--navy);color:var(--white);}
+.btn-red{background:#c0392b;color:var(--white);}
+.btn-sm:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:22px;}
+.stat-box{background:var(--white);border-radius:var(--radius);padding:20px;border-left:4px solid var(--gold);box-shadow:var(--shadow);}
+.stat-box .sb-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:var(--navy);}
+.stat-box .sb-label{color:var(--gray);font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;}
+</style>
+</head>
+<body>
+<div class="dash-layout">
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <img src="PICS/LOGO.jpg" alt="Logo"/>
+    <div class="t">ST. FRANCIS<span>Teacher Portal</span></div>
+  </div>
+  <div class="sidebar-menu">
+    <div class="menu-label">My Portal</div>
+    <div class="menu-item active" onclick="showPage('dashboard',this)"><span class="icon">📊</span> Dashboard</div>
+    <div class="menu-item" onclick="showPage('marks',this)"><span class="icon">📝</span> Enter Marks</div>
+    <div class="menu-item" onclick="showPage('students',this)"><span class="icon">🎓</span> Student Details</div>
+    <div class="menu-item" onclick="showPage('remarks',this)"><span class="icon">💬</span> Remarks</div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="logout-btn" onclick="logout()"><span>🚪</span> Logout</div>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="topbar">
+    <h2 id="pageTitle">Teacher Dashboard</h2>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <span style="color:var(--gray);font-size:0.83rem;" id="dateStr"></span>
+      <div class="teacher-badge">👨‍🏫 TEACHER</div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="stats-row">
+      <div class="stat-box"><div class="sb-num">3</div><div class="sb-label">Classes Assigned</div></div>
+      <div class="stat-box" style="border-color:#27ae60"><div class="sb-num">120</div><div class="sb-label">Students Under Me</div></div>
+      <div class="stat-box" style="border-color:#2980b9"><div class="sb-num">5</div><div class="sb-label">Pending Remarks</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3>My Class Schedule</h3></div>
+      <table>
+        <tr><th>Day</th><th>Period 1</th><th>Period 2</th><th>Period 3</th><th>Period 4</th></tr>
+        <tr><td>Monday</td><td>X – A (Physics)</td><td>XII – Sci</td><td>—</td><td>IX – A</td></tr>
+        <tr><td>Tuesday</td><td>—</td><td>X – B (Physics)</td><td>XII – Sci</td><td>—</td></tr>
+        <tr><td>Wednesday</td><td>X – A (Physics)</td><td>—</td><td>IX – A</td><td>XII – Sci</td></tr>
+        <tr><td>Thursday</td><td>X – B (Physics)</td><td>XII – Sci</td><td>—</td><td>X – A</td></tr>
+        <tr><td>Friday</td><td>—</td><td>IX – A</td><td>X – B</td><td>XII – Sci</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- MARKS -->
+  <div class="page" id="page-marks">
+    <div class="card">
+      <div class="card-header"><h3>Enter Marks</h3></div>
+      <div class="form-row">
+        <div class="form-group"><label>Select Class</label>
+          <select id="marksClass"><option>X – A</option><option>X – B</option><option>XII – Science</option><option>IX – A</option></select>
+        </div>
+        <div class="form-group"><label>Exam Type</label>
+          <select id="marksExam"><option>Unit Test 1</option><option>Mid-Term</option><option>Unit Test 2</option><option>Final Exam</option></select>
+        </div>
+        <div class="form-group"><label>Subject</label>
+          <input type="text" value="Physics" id="marksSubject"/>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3>Student Marks Sheet</h3><button class="btn-sm btn-gold" onclick="saveMarks()">Save Marks</button></div>
+      <table id="marksTable">
+        <tr><th>Roll No</th><th>Student Name</th><th>Marks Obtained</th><th>Total Marks</th><th>Grade</th></tr>
+        <tr><td>SA001</td><td>Priya Sharma</td><td><input type="number" min="0" max="100" value="95" style="width:70px;padding:4px 8px;border:1px solid var(--light-gray);border-radius:6px;" onchange="calcGrade(this)"/></td><td>100</td><td><span class="badge badge-green">A+</span></td></tr>
+        <tr><td>SB002</td><td>Aryan Singh</td><td><input type="number" min="0" max="100" value="88" style="width:70px;padding:4px 8px;border:1px solid var(--light-gray);border-radius:6px;" onchange="calcGrade(this)"/></td><td>100</td><td><span class="badge badge-green">A</span></td></tr>
+        <tr><td>SC003</td><td>Sneha Kumari</td><td><input type="number" min="0" max="100" value="76" style="width:70px;padding:4px 8px;border:1px solid var(--light-gray);border-radius:6px;" onchange="calcGrade(this)"/></td><td>100</td><td><span class="badge badge-gold">B+</span></td></tr>
+        <tr><td>SD004</td><td>Rohit Verma</td><td><input type="number" min="0" max="100" value="62" style="width:70px;padding:4px 8px;border:1px solid var(--light-gray);border-radius:6px;" onchange="calcGrade(this)"/></td><td>100</td><td><span class="badge badge-gold">B</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- STUDENTS -->
+  <div class="page" id="page-students">
+    <div class="card">
+      <div class="card-header"><h3>My Students</h3>
+        <select style="border:1px solid var(--light-gray);border-radius:8px;padding:7px 12px;font-size:0.85rem;">
+          <option>X – A</option><option>X – B</option><option>XII – Science</option>
+        </select>
+      </div>
+      <table>
+        <tr><th>Roll No</th><th>Name</th><th>Attendance %</th><th>Last Marks</th><th>Performance</th></tr>
+        <tr><td>SA001</td><td>Priya Sharma</td><td>98%</td><td>95/100</td><td><span class="badge badge-green">Excellent</span></td></tr>
+        <tr><td>SB002</td><td>Aryan Singh</td><td>95%</td><td>88/100</td><td><span class="badge badge-green">Very Good</span></td></tr>
+        <tr><td>SC003</td><td>Sneha Kumari</td><td>90%</td><td>76/100</td><td><span class="badge badge-gold">Good</span></td></tr>
+        <tr><td>SD004</td><td>Rohit Verma</td><td>82%</td><td>62/100</td><td><span class="badge badge-gold">Average</span></td></tr>
+        <tr><td>SE005</td><td>Kiran Jha</td><td>72%</td><td>55/100</td><td><span class="badge badge-red">Needs Attention</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- REMARKS -->
+  <div class="page" id="page-remarks">
+    <div class="card">
+      <div class="card-header"><h3>Add Student Remark</h3></div>
+      <div class="form-row">
+        <div class="form-group"><label>Select Student</label>
+          <select id="remarkStudent">
+            <option>Priya Sharma (SA001)</option>
+            <option>Aryan Singh (SB002)</option>
+            <option>Sneha Kumari (SC003)</option>
+            <option>Rohit Verma (SD004)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Remark Type</label>
+          <select id="remarkType"><option>Academic</option><option>Behaviour</option><option>Attendance</option><option>Co-curricular</option></select>
+        </div>
+        <div class="form-group"><label>Date</label><input type="date" id="remarkDate"/></div>
+      </div>
+      <div class="form-group"><label>Remark</label><textarea id="remarkText" rows="4" placeholder="Write detailed remark about the student..."></textarea></div>
+      <button class="btn-sm btn-gold" onclick="postRemark()">Post Remark</button>
+    </div>
+    <div class="card" id="remarksList">
+      <div class="card-header"><h3>Recent Remarks</h3></div>
+      <table>
+        <tr><th>Student</th><th>Type</th><th>Remark</th><th>Date</th></tr>
+        <tr><td>Kiran Jha</td><td><span class="badge badge-red">Attendance</span></td><td>Frequently absent. Parents should be informed.</td><td>May 14</td></tr>
+        <tr><td>Priya Sharma</td><td><span class="badge badge-green">Academic</span></td><td>Excellent performance in unit test. Keep it up!</td><td>May 10</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// Auth: role stored by login page
+document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+document.getElementById('remarkDate').valueAsDate = new Date();
+
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles={dashboard:'Teacher Dashboard',marks:'Enter Marks',students:'Student Details',remarks:'Remarks'};
+  document.getElementById('pageTitle').textContent=titles[id]||id;
+}
+
+function calcGrade(input){
+  const v=parseInt(input.value);
+  let g='F',cls='badge-red';
+  if(v>=90){g='A+';cls='badge-green';}
+  else if(v>=80){g='A';cls='badge-green';}
+  else if(v>=70){g='B+';cls='badge-gold';}
+  else if(v>=60){g='B';cls='badge-gold';}
+  else if(v>=50){g='C';cls='badge-gold';}
+  const td=input.closest('tr').querySelector('td:last-child');
+  td.innerHTML=`<span class="badge ${cls}">${g}</span>`;
+}
+
+function saveMarks(){alert('Marks saved successfully!');}
+
+function postRemark(){
+  const s=document.getElementById('remarkStudent').value, t=document.getElementById('remarkType').value, r=document.getElementById('remarkText').value, d=document.getElementById('remarkDate').value;
+  if(!r){alert('Please write a remark.');return;}
+  const table=document.querySelector('#remarksList table');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${s.split('(')[0].trim()}</td><td><span class="badge badge-gold">${t}</span></td><td>${r}</td><td>${d}</td>`;
+  table.appendChild(tr);
+  document.getElementById('remarkText').value='';
+  alert('Remark posted!');
+}
+
+function logout(){localStorage.removeItem('sfs_role');window.location.href='login.html';}
+</script>
+</body>
+</html>
