@@ -7,7 +7,7 @@ git push -u origin tejas
 
 -- AFTER EDITING
 
-git add .
+git add .g
 git commit -m "edit made"
 git push origin tejas
 
