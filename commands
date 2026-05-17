@@ -1,0 +1,16 @@
+git clone https://github.com/arshraj220310/sfs.git
+cd sfs
+git checkout -b tejas
+git add .
+git commit -m "Initial commit"
+git push -u origin tejas
+
+-- AFTER EDITING
+
+git add .
+git commit -m "edit made"
+git push origin tejas
+
+-- TO GET THE EDIT DONE BY ME 
+
+git pull origin arsh-branch
