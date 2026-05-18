@@ -6,6 +6,7 @@
 <title>Admin Dashboard – St. Francis School</title>
 <link rel="stylesheet" href="style.css"/>
 <link rel="icon" href="PICS/LOGO.jpg" type="image/jpeg"/>
+<script src="sfs-data.js"></script>
 <style>
 body { background: #f0f2f8; }
 .dash-layout { display: flex; min-height: 100vh; padding-top: 0; }
@@ -197,10 +198,14 @@ tr:hover td { background: #fafbff; color: var(--navy); }
         </div>
       </div>
       <div id="attendanceList">
-        <div class="attend-row"><div><div class="attend-name">Arsh Raj</div><div class="attend-class">Roll: 13 | Adm: 12345</div></div><div class="attend-toggle"><button class="att-btn att-present selected" onclick="markAtt(this,'P')">Present</button><button class="att-btn att-absent" onclick="markAtt(this,'A')">Absent</button></div></div>
-        <div class="attend-row"><div><div class="attend-name">Samyak Mishra</div><div class="attend-class">Roll: 23 | Adm: 5678</div></div><div class="attend-toggle"><button class="att-btn att-present selected" onclick="markAtt(this,'P')">Present</button><button class="att-btn att-absent" onclick="markAtt(this,'A')">Absent</button></div></div>
-        <div class="attend-row"><div><div class="attend-name">Tejas Vinayak</div><div class="attend-class">Roll: 43 | Adm: 8765</div></div><div class="attend-toggle"><button class="att-btn att-present selected" onclick="markAtt(this,'P')">Present</button><button class="att-btn att-absent" onclick="markAtt(this,'A')">Absent</button></div></div>
+        <div class="attend-row"><div><div class="attend-name">Arsh Raj</div><div class="attend-class">Roll: 13 | Adm: 12345</div></div><div class="attend-toggle"><button class="att-btn att-present selected" id="adm-arsh-P" onclick="pickAtt('arsh','P')">Present</button><button class="att-btn att-absent" id="adm-arsh-A" onclick="pickAtt('arsh','A')">Absent</button></div></div>
+        <div class="attend-row"><div><div class="attend-name">Samyak Mishra</div><div class="attend-class">Roll: 23 | Adm: 5678</div></div><div class="attend-toggle"><button class="att-btn att-present selected" id="adm-samyak-P" onclick="pickAtt('samyak','P')">Present</button><button class="att-btn att-absent" id="adm-samyak-A" onclick="pickAtt('samyak','A')">Absent</button></div></div>
+        <div class="attend-row"><div><div class="attend-name">Tejas Vinayak</div><div class="attend-class">Roll: 43 | Adm: 8765</div></div><div class="attend-toggle"><button class="att-btn att-present selected" id="adm-tejas-P" onclick="pickAtt('tejas','P')">Present</button><button class="att-btn att-absent" id="adm-tejas-A" onclick="pickAtt('tejas','A')">Absent</button></div></div>
       </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3>Attendance Log</h3></div>
+      <div id="attLogArea"><p style="color:var(--gray);">Load attendance section to view log.</p></div>
     </div>
   </div>
 
@@ -242,85 +247,182 @@ tr:hover td { background: #fafbff; color: var(--navy); }
 <script>
 document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 document.getElementById('attDate').valueAsDate = new Date();
+document.getElementById('noticeDate').valueAsDate = new Date();
 
-function getDB(k){ try{ return JSON.parse(localStorage.getItem(k))||[]; }catch(e){ return []; } }
-function setDB(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
+// ── Attendance state ──
+const attSel = {arsh:'P', samyak:'P', tejas:'P'};
+function pickAtt(sid, val){
+  attSel[sid] = val;
+  ['P','A'].forEach(v=>{ const b=document.getElementById(`adm-${sid}-${v}`); if(b) b.classList.toggle('selected',v===val); });
+}
 
-// Restore persisted notices on load
-(function(){
-  const notices=getDB('sfs_notices_admin');
-  const board=document.getElementById('noticeBoard');
-  notices.forEach(n=>{
-    const div=document.createElement('div'); div.className='notice-item';
-    div.innerHTML=`<div class="notice-dot"></div><div class="notice-content"><h4>${n.title}</h4><p>${n.content}</p></div><span class="notice-date">${n.date}</span>`;
-    board.appendChild(div);
+async function saveAttendance(){
+  const date = document.getElementById('attDate').value;
+  if(!date){alert('Select a date.');return;}
+  await fbSet(`attendance/${date}`, {arsh:attSel.arsh, samyak:attSel.samyak, tejas:attSel.tejas, savedBy:'Admin'});
+  renderAttLog();
+  alert('✅ Attendance saved!');
+}
+
+async function renderAttLog(){
+  const area = document.getElementById('attLogArea');
+  if(!area) return;
+  const data = await fbGet('attendance') || {};
+  const entries = Object.entries(data);
+  if(!entries.length){area.innerHTML='<p style="color:var(--gray);padding:10px;">No attendance recorded yet.</p>';return;}
+  const badge = s => s==='P'?'<span class="badge badge-green">P</span>':'<span class="badge badge-red">A</span>';
+  let h='<table><tr><th>Date</th><th>Arsh</th><th>Samyak</th><th>Tejas</th><th>By</th></tr>';
+  entries.sort((a,b)=>b[0].localeCompare(a[0])).forEach(([d,v])=>{ h+=`<tr><td>${d}</td><td>${badge(v.arsh)}</td><td>${badge(v.samyak)}</td><td>${badge(v.tejas)}</td><td>${v.savedBy||''}</td></tr>`; });
+  area.innerHTML = h+'</table>';
+}
+
+// ── Students ──
+async function addStudent(){
+  const n=document.getElementById('sName').value.trim(), r=document.getElementById('sRoll').value.trim(),
+        c=document.getElementById('sClass').value, p=document.getElementById('sParent').value.trim(),
+        ph=document.getElementById('sPhone').value.trim(), dob=document.getElementById('sDob').value;
+  if(!n||!r){alert('Fill Name and Roll Number.');return;}
+  await fbPush('admin_students', {name:n,roll:r,cls:c,parent:p,phone:ph,dob,addedOn:new Date().toLocaleDateString('en-IN')});
+  ['sName','sRoll','sParent','sPhone','sDob'].forEach(id=>document.getElementById(id).value='');
+  renderStudents();
+  alert('✅ Student added!');
+}
+
+async function renderStudents(){
+  const tb = document.getElementById('studentTable');
+  tb.innerHTML='<tr><th>Name</th><th>Roll No</th><th>Class</th><th>Parent</th><th>Contact</th><th>Action</th></tr>';
+  // Fixed portal students
+  ['Arsh Raj|13|X – A|—|—','Samyak Mishra|23|X – A|—|—','Tejas Vinayak|43|X – A|—|—'].forEach(s=>{
+    const[nm,rl,cl,pr,ph]=s.split('|');
+    tb.innerHTML+=`<tr><td>${nm}</td><td>${rl}</td><td>${cl}</td><td>${pr}</td><td>${ph}</td><td><span class="badge badge-green">Portal Active</span></td></tr>`;
   });
-})();
-
-function showPage(id, el){
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(el) el.classList.add('active');
-  const titles = {dashboard:'Dashboard',students:'Students Management',teachers:'Teachers Management',attendance:'Attendance',notices:'Notice Board',gallery:'Photo Gallery'};
-  document.getElementById('pageTitle').textContent = titles[id] || id;
+  const data = await fbGet('admin_students') || {};
+  Object.entries(data).forEach(([key,s])=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${s.name}</td><td>${s.roll}</td><td>${s.cls}</td><td>${s.parent||'—'}</td><td>${s.phone||'—'}</td><td><button class="btn-sm btn-red" onclick="delStudent('${key}')">Remove</button></td>`;
+    tb.appendChild(tr);
+  });
 }
 
-function addStudent(){
-  const n=document.getElementById('sName').value, r=document.getElementById('sRoll').value, c=document.getElementById('sClass').value, p=document.getElementById('sParent').value, ph=document.getElementById('sPhone').value;
-  if(!n||!r){alert('Please fill Name and Roll Number.');return;}
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td>${n}</td><td>${r}</td><td>${c}</td><td>${p}</td><td>${ph}</td><td><button class="btn-sm btn-red" onclick="this.closest('tr').remove()">Remove</button></td>`;
-  document.getElementById('studentTable').appendChild(tr);
-  ['sName','sRoll','sParent','sPhone'].forEach(id=>document.getElementById(id).value='');
-  alert('Student added successfully!');
-}
+async function delStudent(key){ await fbDelete(`admin_students/${key}`); renderStudents(); }
 
-function addTeacher(){
-  const n=document.getElementById('tName').value, s=document.getElementById('tSubject').value, q=document.getElementById('tQual').value, p=document.getElementById('tPhone').value;
-  if(!n){alert('Please enter teacher name.');return;}
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td>${n}</td><td>${s}</td><td>${q}</td><td>${p}</td><td><button class="btn-sm btn-red" onclick="this.closest('tr').remove()">Remove</button></td>`;
-  document.getElementById('teacherTable').appendChild(tr);
+// ── Teachers ──
+async function addTeacher(){
+  const n=document.getElementById('tName').value.trim(), s=document.getElementById('tSubject').value.trim(),
+        q=document.getElementById('tQual').value.trim(), p=document.getElementById('tPhone').value.trim();
+  if(!n){alert('Enter teacher name.');return;}
+  await fbPush('admin_teachers', {name:n,subject:s,qual:q,phone:p,addedOn:new Date().toLocaleDateString('en-IN')});
   ['tName','tSubject','tQual','tPhone'].forEach(id=>document.getElementById(id).value='');
-  alert('Teacher added!');
+  renderTeachers();
+  alert('✅ Teacher added!');
 }
 
-function markAtt(btn, type){
-  const row=btn.closest('.attend-toggle');
-  row.querySelectorAll('.att-btn').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
+async function renderTeachers(){
+  const tb = document.getElementById('teacherTable');
+  tb.innerHTML='<tr><th>Name</th><th>Subject</th><th>Qualification</th><th>Contact</th><th>Action</th></tr>';
+  // Fixed teachers
+  ['Mr. Tapan|—|—|—','Mr. Vaskar|—|—|—'].forEach(t=>{
+    const[nm,s,q,p]=t.split('|');
+    tb.innerHTML+=`<tr><td>${nm}</td><td>${s}</td><td>${q}</td><td>${p}</td><td><span class="badge badge-gold">Portal Active</span></td></tr>`;
+  });
+  const data = await fbGet('admin_teachers') || {};
+  Object.entries(data).forEach(([key,t])=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${t.name}</td><td>${t.subject||'—'}</td><td>${t.qual||'—'}</td><td>${t.phone||'—'}</td><td><button class="btn-sm btn-red" onclick="delTeacher('${key}')">Remove</button></td>`;
+    tb.appendChild(tr);
+  });
 }
 
-function saveAttendance(){alert('Attendance saved successfully!');}
+async function delTeacher(key){ await fbDelete(`admin_teachers/${key}`); renderTeachers(); }
 
-function postNotice(){
-  const t=document.getElementById('noticeTitle').value, c=document.getElementById('noticeContent').value, d=document.getElementById('noticeDate').value;
-  if(!t||!c){alert('Please fill title and content.');return;}
-  const div=document.createElement('div'); div.className='notice-item';
-  div.innerHTML=`<div class="notice-dot"></div><div class="notice-content"><h4>${t}</h4><p>${c}</p></div><span class="notice-date">${d}</span>`;
-  document.getElementById('noticeBoard').appendChild(div);
-  const notices=getDB('sfs_notices_admin');
-  notices.push({title:t,content:c,date:d});
-  setDB('sfs_notices_admin',notices);
+// ── Notices ──
+async function postNotice(){
+  const t=document.getElementById('noticeTitle').value.trim(),
+        c=document.getElementById('noticeContent').value.trim(),
+        d=document.getElementById('noticeDate').value,
+        cat=document.getElementById('noticeCat').value;
+  if(!t||!c){alert('Fill title and content.');return;}
+  await fbPush('notices', {title:t, content:c, date:d, category:cat, postedBy:'Admin', postedAt:new Date().toLocaleDateString('en-IN')});
   document.getElementById('noticeTitle').value=''; document.getElementById('noticeContent').value='';
-  alert('Notice posted!');
+  renderNotices();
+  alert('✅ Notice posted!');
 }
 
-function handleUpload(e){
+async function renderNotices(){
+  const board = document.getElementById('noticeBoard');
+  board.innerHTML='<div class="card-header"><h3>Posted Notices</h3></div>';
+  const data = await fbGet('notices') || {};
+  const entries = Object.entries(data);
+  if(!entries.length){board.innerHTML+='<p style="color:var(--gray);padding:10px;">No notices posted yet.</p>';return;}
+  entries.sort((a,b)=>b[0].localeCompare(a[0])).forEach(([key,n])=>{
+    board.innerHTML+=`<div class="notice-item"><div class="notice-dot"></div><div class="notice-content"><h4>${n.title} <span class="badge badge-gold">${n.category||'General'}</span></h4><p>${n.content}</p></div><div style="text-align:right;"><span class="notice-date">${n.date}</span><br><button class="btn-sm btn-red" style="margin-top:6px;font-size:0.7rem;padding:4px 10px;" onclick="delNotice('${key}')">Delete</button></div></div>`;
+  });
+}
+
+async function delNotice(key){ await fbDelete(`notices/${key}`); renderNotices(); }
+
+// ── Gallery ──
+async function handleUpload(e){
   const files=Array.from(e.target.files);
-  files.forEach(f=>{
+  for(const f of files){
     const reader=new FileReader();
-    reader.onload=ev=>{
-      const div=document.createElement('div'); div.className='gallery-admin-item'; div.style.border='none';
-      div.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;"/>`;
-      document.getElementById('galleryGrid').appendChild(div);
+    reader.onload = async ev=>{
+      const base64 = ev.target.result;
+      await fbPush('gallery', {img:base64, name:f.name, date:new Date().toLocaleDateString('en-IN')});
+      renderGallery();
     };
     reader.readAsDataURL(f);
+  }
+}
+
+async function renderGallery(){
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML=`<div class="gallery-admin-item" onclick="document.getElementById('photoUpload').click()"><span>➕</span><p>Add Photo</p></div>`;
+  const data = await fbGet('gallery') || {};
+  Object.entries(data).forEach(([key,g])=>{
+    const div=document.createElement('div'); div.className='gallery-admin-item'; div.style.border='none'; div.style.position='relative';
+    div.innerHTML=`<img src="${g.img}" style="width:100%;height:100%;object-fit:cover;"/><button onclick="delPhoto('${key}')" style="position:absolute;top:4px;right:4px;background:#c0392b;color:#fff;border:none;border-radius:4px;padding:2px 7px;cursor:pointer;font-size:0.7rem;">✕</button>`;
+    grid.appendChild(div);
   });
 }
 
-function logout(){localStorage.removeItem('sfs_role');window.location.href='login.html';}
+async function delPhoto(key){ await fbDelete(`gallery/${key}`); renderGallery(); }
+
+// ── Dashboard stats ──
+async function updateDash(){
+  const students = await fbGet('admin_students')||{};
+  const teachers = await fbGet('admin_teachers')||{};
+  const notices  = await fbGet('notices')||{};
+  const att      = await fbGet('attendance')||{};
+  const total = Object.keys(att).length;
+  let presentSum=0, count=0;
+  Object.values(att).forEach(v=>{ ['arsh','samyak','tejas'].forEach(s=>{ if(v[s]==='P') presentSum++; count++; }); });
+  const avgAtt = count>0 ? Math.round(presentSum/count*100)+'%' : '—';
+  document.querySelector('.stats-row .stat-box:nth-child(1) .sb-num').textContent = 3 + Object.keys(students).length;
+  document.querySelector('.stats-row .stat-box:nth-child(2) .sb-num').textContent = 2 + Object.keys(teachers).length;
+  document.querySelector('.stats-row .stat-box:nth-child(3) .sb-num').textContent = avgAtt;
+  document.querySelector('.stats-row .stat-box:nth-child(4) .sb-num').textContent = Object.keys(notices).length;
+}
+
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles={dashboard:'Dashboard',students:'Students Management',teachers:'Teachers Management',attendance:'Attendance',notices:'Notice Board',gallery:'Photo Gallery'};
+  document.getElementById('pageTitle').textContent=titles[id]||id;
+  if(id==='students') renderStudents();
+  if(id==='teachers') renderTeachers();
+  if(id==='attendance') renderAttLog();
+  if(id==='notices') renderNotices();
+  if(id==='gallery') renderGallery();
+  if(id==='dashboard') updateDash();
+}
+
+function logout(){ sessionStorage.clear(); window.location.href='login.html'; }
+
+// Init
+updateDash();
 </script>
 </body>
 </html>
