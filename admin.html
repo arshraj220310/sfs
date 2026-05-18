@@ -1,428 +1,1119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Admin Dashboard – St. Francis School</title>
-<link rel="stylesheet" href="style.css"/>
-<link rel="icon" href="PICS/LOGO.jpg" type="image/jpeg"/>
-<script src="sfs-data.js"></script>
-<style>
-body { background: #f0f2f8; }
-.dash-layout { display: flex; min-height: 100vh; padding-top: 0; }
-/* SIDEBAR */
-.sidebar { width: 260px; background: var(--navy); min-height: 100vh; position: fixed; top: 0; left: 0; z-index: 100; display: flex; flex-direction: column; border-right: 2px solid var(--gold); }
-.sidebar-brand { padding: 24px 20px; border-bottom: 1px solid rgba(201,168,76,0.2); display: flex; align-items: center; gap: 12px; }
-.sidebar-brand img { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--gold); }
-.sidebar-brand .t { font-family: 'Playfair Display',serif; font-size: 0.9rem; color: var(--white); line-height: 1.3; }
-.sidebar-brand .t span { display: block; color: var(--gold); font-size: 0.65rem; letter-spacing: 2px; font-family: 'Inter',sans-serif; font-weight: 600; }
-.sidebar-menu { flex: 1; padding: 20px 12px; overflow-y: auto; }
-.menu-label { color: rgba(255,255,255,0.3); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; padding: 0 10px; margin: 16px 0 8px; }
-.menu-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; color: rgba(255,255,255,0.65); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: var(--transition); margin-bottom: 4px; }
-.menu-item:hover, .menu-item.active { background: rgba(201,168,76,0.12); color: var(--gold); }
-.menu-item .icon { font-size: 1.1rem; width: 22px; text-align: center; }
-.sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(201,168,76,0.15); }
-.logout-btn { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; color: rgba(255,255,255,0.5); font-size: 0.875rem; cursor: pointer; transition: var(--transition); }
-.logout-btn:hover { color: #ff6b6b; background: rgba(192,57,43,0.1); }
-/* MAIN */
-.main-content { margin-left: 260px; flex: 1; }
-.topbar { background: var(--white); border-bottom: 1px solid var(--light-gray); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-.topbar h2 { font-size: 1.25rem; color: var(--navy); }
-.topbar-right { display: flex; align-items: center; gap: 16px; }
-.admin-badge { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: var(--navy); font-size: 0.78rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; }
-.page { padding: 32px; display: none; }
-.page.active { display: block; }
-/* STATS */
-.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; margin-bottom: 28px; }
-.stat-box { background: var(--white); border-radius: var(--radius); padding: 24px; border-left: 4px solid var(--gold); box-shadow: var(--shadow); }
-.stat-box .sb-num { font-family:'Playfair Display',serif; font-size: 2rem; font-weight: 800; color: var(--navy); }
-.stat-box .sb-label { color: var(--gray); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
-.stat-box .sb-icon { font-size: 1.6rem; float: right; margin-top: -40px; }
-/* TABLE */
-.card { background: var(--white); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow); margin-bottom: 24px; }
-.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-.card-header h3 { font-size: 1.1rem; color: var(--navy); }
-table { width: 100%; border-collapse: collapse; }
-th { background: var(--off-white); color: var(--navy); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 12px 16px; text-align: left; border-bottom: 2px solid var(--light-gray); }
-td { padding: 12px 16px; font-size: 0.875rem; color: var(--gray); border-bottom: 1px solid var(--light-gray); }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: #fafbff; color: var(--navy); }
-.badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; }
-.badge-green { background: #d4edda; color: #155724; }
-.badge-red { background: #f8d7da; color: #721c24; }
-.badge-blue { background: #d1ecf1; color: #0c5460; }
-.badge-gold { background: rgba(201,168,76,0.15); color: var(--gold-dark); }
-/* FORM INLINE */
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.form-group { margin-bottom: 16px; }
-.form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; border: 1px solid var(--light-gray); border-radius: 8px; padding: 10px 14px; font-size: 0.875rem; font-family: 'Inter',sans-serif; color: var(--navy); transition: var(--transition); }
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
-.btn-sm { padding: 8px 18px; border: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
-.btn-gold { background: linear-gradient(135deg,var(--gold),var(--gold-dark)); color: var(--navy); }
-.btn-navy { background: var(--navy); color: var(--white); }
-.btn-red { background: #c0392b; color: var(--white); }
-.btn-sm:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-/* GALLERY UPLOAD */
-.gallery-admin { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
-.gallery-admin-item { aspect-ratio: 1; border-radius: var(--radius); overflow: hidden; background: var(--off-white); border: 2px dashed var(--light-gray); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; cursor: pointer; transition: var(--transition); }
-.gallery-admin-item:hover { border-color: var(--gold); background: rgba(201,168,76,0.05); }
-.gallery-admin-item span { font-size: 1.8rem; }
-.gallery-admin-item p { font-size: 0.75rem; color: var(--gray); }
-/* ATTENDANCE */
-.attend-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--light-gray); }
-.attend-row:last-child { border: none; }
-.attend-name { font-weight: 600; color: var(--navy); font-size: 0.9rem; }
-.attend-class { font-size: 0.8rem; color: var(--gray); }
-.attend-toggle { display: flex; gap: 8px; }
-.att-btn { padding: 5px 14px; border: none; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
-.att-present { background: #d4edda; color: #155724; }
-.att-absent { background: #f8d7da; color: #721c24; }
-.att-btn.selected { transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard – St. Francis School</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="PICS/LOGO.jpg" type="image/jpeg" />
+  <script src="sfs-data.js"></script>
+  <style>
+    body {
+      background: #f0f2f8;
+    }
+
+    .dash-layout {
+      display: flex;
+      min-height: 100vh;
+      padding-top: 0;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: var(--navy);
+      min-height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      border-right: 2px solid var(--gold);
+    }
+
+    .sidebar-brand {
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sidebar-brand img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+    }
+
+    .sidebar-brand .t {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      color: var(--white);
+      line-height: 1.3;
+    }
+
+    .sidebar-brand .t span {
+      display: block;
+      color: var(--gold);
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+    }
+
+    .sidebar-menu {
+      flex: 1;
+      padding: 20px 12px;
+      overflow-y: auto;
+    }
+
+    .menu-label {
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0 10px;
+      margin: 16px 0 8px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 4px;
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+      background: rgba(201, 168, 76, 0.12);
+      color: var(--gold);
+    }
+
+    .menu-item .icon {
+      font-size: 1.1rem;
+      width: 22px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 16px 12px;
+      border-top: 1px solid rgba(201, 168, 76, 0.15);
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .logout-btn:hover {
+      color: #ff6b6b;
+      background: rgba(192, 57, 43, 0.1);
+    }
+
+    /* MAIN */
+    .main-content {
+      margin-left: 260px;
+      flex: 1;
+    }
+
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--light-gray);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .topbar h2 {
+      font-size: 1.25rem;
+      color: var(--navy);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .admin-badge {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: var(--navy);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    .page {
+      padding: 32px;
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* STATS */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .stat-box {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      border-left: 4px solid var(--gold);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-box .sb-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .stat-box .sb-label {
+      color: var(--gray);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-box .sb-icon {
+      font-size: 1.6rem;
+      float: right;
+      margin-top: -40px;
+    }
+
+    /* TABLE */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .card-header h3 {
+      font-size: 1.1rem;
+      color: var(--navy);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: var(--off-white);
+      color: var(--navy);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 2px solid var(--light-gray);
+    }
+
+    td {
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      color: var(--gray);
+      border-bottom: 1px solid var(--light-gray);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #fafbff;
+      color: var(--navy);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .badge-green {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .badge-red {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .badge-blue {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .badge-gold {
+      background: rgba(201, 168, 76, 0.15);
+      color: var(--gold-dark);
+    }
+
+    /* FORM INLINE */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      border: 1px solid var(--light-gray);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.875rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--navy);
+      transition: var(--transition);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.12);
+    }
+
+    .btn-sm {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: var(--navy);
+    }
+
+    .btn-navy {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .btn-red {
+      background: #c0392b;
+      color: var(--white);
+    }
+
+    .btn-sm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* GALLERY UPLOAD */
+    .gallery-admin {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .gallery-admin-item {
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--off-white);
+      border: 2px dashed var(--light-gray);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .gallery-admin-item:hover {
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, 0.05);
+    }
+
+    .gallery-admin-item span {
+      font-size: 1.8rem;
+    }
+
+    .gallery-admin-item p {
+      font-size: 0.75rem;
+      color: var(--gray);
+    }
+
+    /* ATTENDANCE */
+    .attend-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--light-gray);
+    }
+
+    .attend-row:last-child {
+      border: none;
+    }
+
+    .attend-name {
+      font-weight: 600;
+      color: var(--navy);
+      font-size: 0.9rem;
+    }
+
+    .attend-class {
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+
+    .attend-toggle {
+      display: flex;
+      gap: 8px;
+    }
+
+    .att-btn {
+      padding: 5px 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .att-present {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .att-absent {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .att-btn.selected {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+  </style>
 </head>
+
 <body>
-<div class="dash-layout">
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="sidebar-brand">
-    <img src="PICS/LOGO.jpg" alt="Logo"/>
-    <div class="t">ST. FRANCIS SCHOOL<span>Admin Panel</span></div>
-  </div>
-  <div class="sidebar-menu">
-    <div class="menu-label">Main</div>
-    <div class="menu-item active" onclick="showPage('dashboard',this)"><span class="icon">📊</span> Dashboard</div>
-    <div class="menu-label">Management</div>
-    <div class="menu-item" onclick="showPage('students',this)"><span class="icon">🎓</span> Students</div>
-    <div class="menu-item" onclick="showPage('teachers',this)"><span class="icon">👨‍🏫</span> Teachers</div>
-    <div class="menu-item" onclick="showPage('attendance',this)"><span class="icon">✅</span> Attendance</div>
-    <div class="menu-item" onclick="showPage('notices',this)"><span class="icon">📢</span> Notices</div>
-    <div class="menu-label">Content</div>
-    <div class="menu-item" onclick="showPage('gallery',this)"><span class="icon">🖼️</span> Gallery</div>
-  </div>
-  <div class="sidebar-footer">
-    <div class="logout-btn" onclick="logout()"><span>🚪</span> Logout</div>
-  </div>
-</div>
-
-<!-- MAIN -->
-<div class="main-content">
-  <div class="topbar">
-    <h2 id="pageTitle">Dashboard</h2>
-    <div class="topbar-right">
-      <span style="color:var(--gray);font-size:0.85rem;" id="dateStr"></span>
-      <div class="admin-badge">🔑 ADMIN</div>
-    </div>
-  </div>
-
-  <!-- DASHBOARD -->
-  <div class="page active" id="page-dashboard">
-    <div class="stats-row">
-      <div class="stat-box"><div class="sb-icon">🎓</div><div class="sb-num">3,524</div><div class="sb-label">Total Students</div></div>
-      <div class="stat-box" style="border-color:#27ae60"><div class="sb-icon">👨‍🏫</div><div class="sb-num">148</div><div class="sb-label">Teachers</div></div>
-      <div class="stat-box" style="border-color:#2980b9"><div class="sb-icon">✅</div><div class="sb-num">94.2%</div><div class="sb-label">Avg Attendance</div></div>
-      <div class="stat-box" style="border-color:#8e44ad"><div class="sb-icon">📢</div><div class="sb-num">12</div><div class="sb-label">Active Notices</div></div>
-    </div>
-    <div class="card">
-      <div class="card-header"><h3>Recent Student Registrations</h3><button class="btn-sm btn-gold" onclick="showPage('students',document.querySelector('.menu-item:nth-child(3)'))">View All</button></div>
-      <table>
-        <tr><th>Name</th><th>Class</th><th>Roll No</th><th>Adm No</th><th>Status</th></tr>
-        <tr><td>Arsh Raj</td><td>X – A</td><td>13</td><td>12345</td><td><span class="badge badge-green">Active</span></td></tr>
-        <tr><td>Samyak Mishra</td><td>X – A</td><td>23</td><td>5678</td><td><span class="badge badge-green">Active</span></td></tr>
-        <tr><td>Tejas Vinayak</td><td>X – A</td><td>43</td><td>8765</td><td><span class="badge badge-green">Active</span></td></tr>
-      </table>
-    </div>
-  </div>
-
-  <!-- STUDENTS -->
-  <div class="page" id="page-students">
-    <div class="card">
-      <div class="card-header"><h3>Add New Student</h3></div>
-      <div class="form-row">
-        <div class="form-group"><label>Student Name</label><input type="text" id="sName" placeholder="Full name"/></div>
-        <div class="form-group"><label>Roll Number</label><input type="text" id="sRoll" placeholder="e.g. SA005"/></div>
-        <div class="form-group"><label>Class</label>
-          <select id="sClass"><option>I – A</option><option>II – A</option><option>III – A</option><option>IV – A</option><option>V – A</option><option>VI – A</option><option>VII – A</option><option>VIII – A</option><option>IX – A</option><option>X – A</option><option>XI – Science</option><option>XII – Science</option></select>
-        </div>
-        <div class="form-group"><label>Parent Name</label><input type="text" id="sParent" placeholder="Father/Mother name"/></div>
-        <div class="form-group"><label>Contact Number</label><input type="text" id="sPhone" placeholder="+91 XXXXXXXXXX"/></div>
-        <div class="form-group"><label>Date of Birth</label><input type="date" id="sDob"/></div>
+  <div class="dash-layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <img src="PICS/LOGO.jpg" alt="Logo" />
+        <div class="t">ST. FRANCIS SCHOOL<span>Admin Panel</span></div>
       </div>
-      <button class="btn-sm btn-gold" onclick="addStudent()">Add Student</button>
-    </div>
-    <div class="card">
-      <div class="card-header"><h3>Student Records</h3></div>
-      <table id="studentTable">
-        <tr><th>Name</th><th>Roll No</th><th>Class</th><th>Parent</th><th>Contact</th><th>Action</th></tr>
-        <tr><td>Arsh Raj</td><td>13</td><td>X – A</td><td>—</td><td>—</td><td><span class="badge badge-green">Portal Active</span></td></tr>
-        <tr><td>Samyak Mishra</td><td>23</td><td>X – A</td><td>—</td><td>—</td><td><span class="badge badge-green">Portal Active</span></td></tr>
-        <tr><td>Tejas Vinayak</td><td>43</td><td>X – A</td><td>—</td><td>—</td><td><span class="badge badge-green">Portal Active</span></td></tr>
-      </table>
-    </div>
-  </div>
+      <div class="sidebar-menu">
+        <div class="menu-label">Main</div>
+        <div class="menu-item active" onclick="showPage('dashboard',this)"><span class="icon">📊</span> Dashboard</div>
+        <div class="menu-label">Management</div>
+        <div class="menu-item" onclick="showPage('students',this)"><span class="icon">🎓</span> Students</div>
+        <div class="menu-item" onclick="showPage('teachers',this)"><span class="icon">👨‍🏫</span> Teachers</div>
+        <div class="menu-item" onclick="showPage('attendance',this)"><span class="icon">✅</span> Attendance</div>
+        <div class="menu-item" onclick="showPage('notices',this)"><span class="icon">📢</span> Notices</div>
 
-  <!-- TEACHERS -->
-  <div class="page" id="page-teachers">
-    <div class="card">
-      <div class="card-header"><h3>Add New Teacher</h3></div>
-      <div class="form-row">
-        <div class="form-group"><label>Teacher Name</label><input type="text" id="tName" placeholder="Full name"/></div>
-        <div class="form-group"><label>Subject</label><input type="text" id="tSubject" placeholder="e.g. Mathematics"/></div>
-        <div class="form-group"><label>Qualification</label><input type="text" id="tQual" placeholder="e.g. M.Sc, B.Ed"/></div>
-        <div class="form-group"><label>Contact</label><input type="text" id="tPhone" placeholder="+91 XXXXXXXXXX"/></div>
       </div>
-      <button class="btn-sm btn-gold" onclick="addTeacher()">Add Teacher</button>
+      <div class="sidebar-footer">
+        <div class="logout-btn" onclick="logout()"><span>🚪</span> Logout</div>
+      </div>
     </div>
-    <div class="card">
-      <div class="card-header"><h3>Teacher Records</h3></div>
-      <table id="teacherTable">
-        <tr><th>Name</th><th>Subject</th><th>Qualification</th><th>Contact</th><th>Action</th></tr>
-        <tr><td>Mr. Rajesh Kumar</td><td>Physics</td><td>M.Sc, B.Ed</td><td>9876540001</td><td><button class="btn-sm btn-red" onclick="this.closest('tr').remove()">Remove</button></td></tr>
-        <tr><td>Ms. Preethi Nair</td><td>English</td><td>M.A, B.Ed</td><td>9876540002</td><td><button class="btn-sm btn-red" onclick="this.closest('tr').remove()">Remove</button></td></tr>
-        <tr><td>Mr. Anil Mishra</td><td>Mathematics</td><td>M.Sc, B.Ed</td><td>9876540003</td><td><button class="btn-sm btn-red" onclick="this.closest('tr').remove()">Remove</button></td></tr>
-      </table>
-    </div>
-  </div>
 
-  <!-- ATTENDANCE -->
-  <div class="page" id="page-attendance">
-    <div class="card">
-      <div class="card-header">
-        <h3>Mark Attendance</h3>
-        <div style="display:flex;gap:12px;align-items:center;">
-          <select style="border:1px solid var(--light-gray);border-radius:8px;padding:7px 12px;font-size:0.85rem;" id="attClass">
-            <option>X – A</option><option>X – B</option><option>XII – Science</option>
-          </select>
-          <input type="date" id="attDate" style="border:1px solid var(--light-gray);border-radius:8px;padding:7px 12px;font-size:0.85rem;"/>
-          <button class="btn-sm btn-gold" onclick="saveAttendance()">Save</button>
+    <!-- MAIN -->
+    <div class="main-content">
+      <div class="topbar">
+        <h2 id="pageTitle">Dashboard</h2>
+        <div class="topbar-right">
+          <span style="color:var(--gray);font-size:0.85rem;" id="dateStr"></span>
+          <div class="admin-badge">🔑 ADMIN</div>
         </div>
       </div>
-      <div id="attendanceList">
-        <div class="attend-row"><div><div class="attend-name">Arsh Raj</div><div class="attend-class">Roll: 13 | Adm: 12345</div></div><div class="attend-toggle"><button class="att-btn att-present selected" id="adm-arsh-P" onclick="pickAtt('arsh','P')">Present</button><button class="att-btn att-absent" id="adm-arsh-A" onclick="pickAtt('arsh','A')">Absent</button></div></div>
-        <div class="attend-row"><div><div class="attend-name">Samyak Mishra</div><div class="attend-class">Roll: 23 | Adm: 5678</div></div><div class="attend-toggle"><button class="att-btn att-present selected" id="adm-samyak-P" onclick="pickAtt('samyak','P')">Present</button><button class="att-btn att-absent" id="adm-samyak-A" onclick="pickAtt('samyak','A')">Absent</button></div></div>
-        <div class="attend-row"><div><div class="attend-name">Tejas Vinayak</div><div class="attend-class">Roll: 43 | Adm: 8765</div></div><div class="attend-toggle"><button class="att-btn att-present selected" id="adm-tejas-P" onclick="pickAtt('tejas','P')">Present</button><button class="att-btn att-absent" id="adm-tejas-A" onclick="pickAtt('tejas','A')">Absent</button></div></div>
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="sb-icon">🎓</div>
+            <div class="sb-num">3,524</div>
+            <div class="sb-label">Total Students</div>
+          </div>
+          <div class="stat-box" style="border-color:#27ae60">
+            <div class="sb-icon">👨‍🏫</div>
+            <div class="sb-num">148</div>
+            <div class="sb-label">Teachers</div>
+          </div>
+          <div class="stat-box" style="border-color:#2980b9">
+            <div class="sb-icon">✅</div>
+            <div class="sb-num">94.2%</div>
+            <div class="sb-label">Avg Attendance</div>
+          </div>
+          <div class="stat-box" style="border-color:#8e44ad">
+            <div class="sb-icon">📢</div>
+            <div class="sb-num">12</div>
+            <div class="sb-label">Active Notices</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Recent Students</h3><button class="btn-sm btn-gold" onclick="showPage('students',null)">View
+              All</button>
+          </div>
+          <table>
+            <tr>
+              <th>Name</th>
+              <th>Class</th>
+              <th>Roll No</th>
+              <th>Adm No</th>
+              <th>Status</th>
+            </tr>
+            <tr>
+              <td>Arsh Raj</td>
+              <td>X – A</td>
+              <td>13</td>
+              <td>12345</td>
+              <td><span class="badge badge-green">Active</span></td>
+            </tr>
+            <tr>
+              <td>Samyak Mishra</td>
+              <td>X – A</td>
+              <td>23</td>
+              <td>5678</td>
+              <td><span class="badge badge-green">Active</span></td>
+            </tr>
+            <tr>
+              <td>Tejas Vinayak</td>
+              <td>X – A</td>
+              <td>43</td>
+              <td>8765</td>
+              <td><span class="badge badge-green">Active</span></td>
+            </tr>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>🔐 Generated Credentials</h3>
+          </div>
+          <p style="color:var(--gray);font-size:0.82rem;margin-bottom:14px;">Auto-generated logins for newly added
+            students and teachers appear here.</p>
+          <div id="credsList">
+            <p style="color:var(--gray);font-size:0.85rem;">Loading…</p>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="card">
-      <div class="card-header"><h3>Attendance Log</h3></div>
-      <div id="attLogArea"><p style="color:var(--gray);">Load attendance section to view log.</p></div>
+
+      <!-- STUDENTS -->
+      <div class="page" id="page-students">
+        <div class="card">
+          <div class="card-header">
+            <h3>Add New Student</h3>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Student Name</label><input type="text" id="sName" placeholder="Full name" />
+            </div>
+            <div class="form-group"><label>Roll Number</label><input type="text" id="sRoll" placeholder="e.g. SA005" />
+            </div>
+            <div class="form-group"><label>Class</label>
+              <select id="sClass">
+                <optgroup label="Nursery">
+                  <option>Nursery – A</option><option>Nursery – B</option><option>Nursery – C</option><option>Nursery – D</option><option>Nursery – E</option>
+                </optgroup>
+                <optgroup label="KG">
+                  <option>KG – A</option><option>KG – B</option><option>KG – C</option><option>KG – D</option><option>KG – E</option>
+                </optgroup>
+                <optgroup label="Class I – V">
+                  <option>Class I – A</option><option>Class I – B</option><option>Class I – C</option><option>Class I – D</option><option>Class I – E</option>
+                  <option>Class II – A</option><option>Class II – B</option><option>Class II – C</option><option>Class II – D</option><option>Class II – E</option>
+                  <option>Class III – A</option><option>Class III – B</option><option>Class III – C</option><option>Class III – D</option><option>Class III – E</option>
+                  <option>Class IV – A</option><option>Class IV – B</option><option>Class IV – C</option><option>Class IV – D</option><option>Class IV – E</option>
+                  <option>Class V – A</option><option>Class V – B</option><option>Class V – C</option><option>Class V – D</option><option>Class V – E</option>
+                </optgroup>
+                <optgroup label="Class VI – X">
+                  <option>Class VI – A</option><option>Class VI – B</option><option>Class VI – C</option><option>Class VI – D</option><option>Class VI – E</option>
+                  <option>Class VII – A</option><option>Class VII – B</option><option>Class VII – C</option><option>Class VII – D</option><option>Class VII – E</option>
+                  <option>Class VIII – A</option><option>Class VIII – B</option><option>Class VIII – C</option><option>Class VIII – D</option><option>Class VIII – E</option>
+                  <option>Class IX – A</option><option>Class IX – B</option><option>Class IX – C</option><option>Class IX – D</option><option>Class IX – E</option>
+                  <option>Class X – A</option><option>Class X – B</option><option>Class X – C</option><option>Class X – D</option><option>Class X – E</option>
+                </optgroup>
+                <optgroup label="Class XI">
+                  <option>Class XI – Science</option><option>Class XI – Humanities</option><option>Class XI – Arts</option><option>Class XI – Commerce</option>
+                </optgroup>
+                <optgroup label="Class XII">
+                  <option>Class XII – Science</option><option>Class XII – Humanities</option><option>Class XII – Arts</option><option>Class XII – Commerce</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="form-group"><label>Parent Name</label><input type="text" id="sParent"
+                placeholder="Father/Mother name" /></div>
+            <div class="form-group"><label>Contact Number</label><input type="text" id="sPhone"
+                placeholder="+91 XXXXXXXXXX" /></div>
+            <div class="form-group"><label>Date of Birth</label><input type="date" id="sDob" /></div>
+          </div>
+          <button class="btn-sm btn-gold" onclick="addStudent()">Add Student</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Student Records</h3>
+          </div>
+          <table id="studentTable">
+            <tr>
+              <th>Name</th>
+              <th>Roll No</th>
+              <th>Class</th>
+              <th>Parent</th>
+              <th>Contact</th>
+              <th>Action</th>
+            </tr>
+            <tr>
+              <td>Arsh Raj</td>
+              <td>13</td>
+              <td>X – A</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="badge badge-green">Portal Active</span></td>
+            </tr>
+            <tr>
+              <td>Samyak Mishra</td>
+              <td>23</td>
+              <td>X – A</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="badge badge-green">Portal Active</span></td>
+            </tr>
+            <tr>
+              <td>Tejas Vinayak</td>
+              <td>43</td>
+              <td>X – A</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="badge badge-green">Portal Active</span></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- TEACHERS -->
+      <div class="page" id="page-teachers">
+        <div class="card">
+          <div class="card-header">
+            <h3>Add New Teacher</h3>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Teacher Name</label><input type="text" id="tName" placeholder="Full name" />
+            </div>
+            <div class="form-group"><label>Subject</label><input type="text" id="tSubject"
+                placeholder="e.g. Mathematics" /></div>
+            <div class="form-group"><label>Qualification</label><input type="text" id="tQual"
+                placeholder="e.g. M.Sc, B.Ed" /></div>
+            <div class="form-group"><label>Contact</label><input type="text" id="tPhone" placeholder="+91 XXXXXXXXXX" />
+            </div>
+          </div>
+          <button class="btn-sm btn-gold" onclick="addTeacher()">Add Teacher</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Teacher Records</h3>
+          </div>
+          <table id="teacherTable">
+            <tr>
+              <th>Name</th>
+              <th>Subject</th>
+              <th>Qualification</th>
+              <th>Contact</th>
+              <th>Action</th>
+            </tr>
+            <tr>
+              <td>Mr. Rajesh Kumar</td>
+              <td>Physics</td>
+              <td>M.Sc, B.Ed</td>
+              <td>9876540001</td>
+              <td><button class="btn-sm btn-red" onclick="this.closest('tr').remove()">Remove</button></td>
+            </tr>
+            <tr>
+              <td>Ms. Preethi Nair</td>
+              <td>English</td>
+              <td>M.A, B.Ed</td>
+              <td>9876540002</td>
+              <td><button class="btn-sm btn-red" onclick="this.closest('tr').remove()">Remove</button></td>
+            </tr>
+            <tr>
+              <td>Mr. Anil Mishra</td>
+              <td>Mathematics</td>
+              <td>M.Sc, B.Ed</td>
+              <td>9876540003</td>
+              <td><button class="btn-sm btn-red" onclick="this.closest('tr').remove()">Remove</button></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE -->
+      <div class="page" id="page-attendance">
+        <div class="card">
+          <div class="card-header">
+            <h3>Mark Attendance</h3>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <select id="attClass" onchange="filterAttendanceByClass()"
+                style="border:1px solid var(--light-gray);border-radius:8px;padding:7px 12px;font-size:0.83rem;min-width:160px;">
+                <option value="">-- Select Class --</option>
+                <optgroup label="Nursery">
+                  <option>Nursery – A</option>
+                  <option>Nursery – B</option>
+                  <option>Nursery – C</option>
+                  <option>Nursery – D</option>
+                  <option>Nursery – E</option>
+                </optgroup>
+                <optgroup label="KG">
+                  <option>KG – A</option>
+                  <option>KG – B</option>
+                  <option>KG – C</option>
+                  <option>KG – D</option>
+                  <option>KG – E</option>
+                </optgroup>
+                <optgroup label="Class I – V">
+                  <option>Class I – A</option>
+                  <option>Class I – B</option>
+                  <option>Class I – C</option>
+                  <option>Class I – D</option>
+                  <option>Class I – E</option>
+                  <option>Class II – A</option>
+                  <option>Class II – B</option>
+                  <option>Class II – C</option>
+                  <option>Class II – D</option>
+                  <option>Class II – E</option>
+                  <option>Class III – A</option>
+                  <option>Class III – B</option>
+                  <option>Class III – C</option>
+                  <option>Class III – D</option>
+                  <option>Class III – E</option>
+                  <option>Class IV – A</option>
+                  <option>Class IV – B</option>
+                  <option>Class IV – C</option>
+                  <option>Class IV – D</option>
+                  <option>Class IV – E</option>
+                  <option>Class V – A</option>
+                  <option>Class V – B</option>
+                  <option>Class V – C</option>
+                  <option>Class V – D</option>
+                  <option>Class V – E</option>
+                </optgroup>
+                <optgroup label="Class VI – X">
+                  <option>Class VI – A</option>
+                  <option>Class VI – B</option>
+                  <option>Class VI – C</option>
+                  <option>Class VI – D</option>
+                  <option>Class VI – E</option>
+                  <option>Class VII – A</option>
+                  <option>Class VII – B</option>
+                  <option>Class VII – C</option>
+                  <option>Class VII – D</option>
+                  <option>Class VII – E</option>
+                  <option>Class VIII – A</option>
+                  <option>Class VIII – B</option>
+                  <option>Class VIII – C</option>
+                  <option>Class VIII – D</option>
+                  <option>Class VIII – E</option>
+                  <option>Class IX – A</option>
+                  <option>Class IX – B</option>
+                  <option>Class IX – C</option>
+                  <option>Class IX – D</option>
+                  <option>Class IX – E</option>
+                  <option>Class X – A</option>
+                  <option>Class X – B</option>
+                  <option>Class X – C</option>
+                  <option>Class X – D</option>
+                  <option>Class X – E</option>
+                </optgroup>
+                <optgroup label="Class XI">
+                  <option>Class XI – Science</option>
+                  <option>Class XI – Humanities</option>
+                  <option>Class XI – Arts</option>
+                  <option>Class XI – Commerce</option>
+                </optgroup>
+                <optgroup label="Class XII">
+                  <option>Class XII – Science</option>
+                  <option>Class XII – Humanities</option>
+                  <option>Class XII – Arts</option>
+                  <option>Class XII – Commerce</option>
+                </optgroup>
+              </select>
+              <input type="date" id="attDate"
+                style="border:1px solid var(--light-gray);border-radius:8px;padding:7px 12px;font-size:0.85rem;" />
+              <button class="btn-sm btn-gold" onclick="saveAttendance()">Save</button>
+            </div>
+          </div>
+          <div id="attendanceList">
+            <p style="color:var(--gray);padding:14px 0;font-size:0.875rem;">👆 Select a class above to mark attendance.
+            </p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Attendance Log</h3>
+          </div>
+          <div id="attLogArea">
+            <p style="color:var(--gray);">Load attendance section to view log.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTICES -->
+      <div class="page" id="page-notices">
+        <div class="card">
+          <div class="card-header">
+            <h3>Post New Notice</h3>
+          </div>
+          <div class="form-group"><label>Notice Title</label><input type="text" id="noticeTitle"
+              placeholder="Enter notice title" /></div>
+          <div class="form-group"><label>Notice Content</label><textarea id="noticeContent" rows="4"
+              placeholder="Enter full notice content..."></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label>Category</label><select id="noticeCat">
+                <option>General</option>
+                <option>Academic</option>
+                <option>Sports</option>
+                <option>Holiday</option>
+                <option>Exam</option>
+              </select></div>
+            <div class="form-group"><label>Date</label><input type="date" id="noticeDate" /></div>
+          </div>
+          <button class="btn-sm btn-gold" onclick="postNotice()">Post Notice</button>
+        </div>
+        <div class="card" id="noticeBoard">
+          <div class="card-header">
+            <h3>Posted Notices</h3>
+          </div>
+          <div class="notice-item">
+            <div class="notice-dot"></div>
+            <div class="notice-content">
+              <h4>Summer Vacation 2026</h4>
+              <p>School closed May 20 – June 15. Classes resume June 16.</p>
+            </div><span class="notice-date">May 15</span>
+          </div>
+          <div class="notice-item">
+            <div class="notice-dot"></div>
+            <div class="notice-content">
+              <h4>Fee Payment Deadline</h4>
+              <p>Term 2 fees due before May 31, 2026.</p>
+            </div><span class="notice-date">May 10</span>
+          </div>
+        </div>
+      </div>
+
+
     </div>
   </div>
 
-  <!-- NOTICES -->
-  <div class="page" id="page-notices">
-    <div class="card">
-      <div class="card-header"><h3>Post New Notice</h3></div>
-      <div class="form-group"><label>Notice Title</label><input type="text" id="noticeTitle" placeholder="Enter notice title"/></div>
-      <div class="form-group"><label>Notice Content</label><textarea id="noticeContent" rows="4" placeholder="Enter full notice content..."></textarea></div>
-      <div class="form-row">
-        <div class="form-group"><label>Category</label><select id="noticeCat"><option>General</option><option>Academic</option><option>Sports</option><option>Holiday</option><option>Exam</option></select></div>
-        <div class="form-group"><label>Date</label><input type="date" id="noticeDate"/></div>
+  <script>
+    document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('attDate').valueAsDate = new Date();
+    document.getElementById('noticeDate').valueAsDate = new Date();
+
+    // Normalize class strings for reliable comparison
+    function normalizeClass(c) {
+      if (!c) return '';
+      return c.replace(/^Class\s+/i, '').replace(/[\u2013\u2014]/g, '-').replace(/\s+/g, '').toLowerCase();
+    }
+
+    // ── Attendance state ──
+    const attSel = { arsh: 'P', samyak: 'P', tejas: 'P' };
+    function pickAtt(sid, val) {
+      attSel[sid] = val;
+      ['P', 'A'].forEach(v => { const b = document.getElementById(`adm-${sid}-${v}`); if (b) b.classList.toggle('selected', v === val); });
+    }
+
+    // Fixed students
+    const FIXED_ADM = [
+      { id: 'arsh', name: 'Arsh Raj', roll: '13', admNo: '12345', cls: 'Class X – A' },
+      { id: 'samyak', name: 'Samyak Mishra', roll: '23', admNo: '5678', cls: 'Class X – A' },
+      { id: 'tejas', name: 'Tejas Vinayak', roll: '43', admNo: '8765', cls: 'Class X – A' }
+    ];
+
+    async function filterAttendanceByClass() {
+      const selCls = document.getElementById('attClass').value;
+      const list = document.getElementById('attendanceList');
+      if (!selCls) { list.innerHTML = '<p style="color:var(--gray);padding:14px 0;font-size:0.875rem;">👆 Select a class above to mark attendance.</p>'; return; }
+
+      list.innerHTML = '<p style="color:var(--gray);padding:10px;">Loading students…</p>';
+
+      // Get admin-added students
+      const data = await fbGet('admin_students') || {};
+      const adminAdded = Object.entries(data).map(([, s]) => ({
+        id: ((s.username || (s.name.split(' ')[0] + s.roll))).toLowerCase(),
+        name: s.name, roll: s.roll || '—', admNo: s.admNo || '—', cls: s.cls || '—'
+      }));
+      const allStudents = [...FIXED_ADM, ...adminAdded];
+      const filtered = allStudents.filter(s => normalizeClass(s.cls) === normalizeClass(selCls));
+
+      if (!filtered.length) {
+        list.innerHTML = `<p style="color:var(--gray);padding:14px 0;font-size:0.875rem;">No students found in <strong>${selCls}</strong>. Add students first.</p>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(s => {
+        attSel[s.id] = attSel[s.id] || 'P';
+        return `<div class="attend-row">
+      <div><div class="attend-name">${s.name}</div><div class="attend-class">Roll: ${s.roll} | ${s.cls}</div></div>
+      <div class="attend-toggle">
+        <button class="att-btn att-present selected" id="adm-${s.id}-P" onclick="pickAtt('${s.id}','P')">Present</button>
+        <button class="att-btn att-absent" id="adm-${s.id}-A" onclick="pickAtt('${s.id}','A')">Absent</button>
       </div>
-      <button class="btn-sm btn-gold" onclick="postNotice()">Post Notice</button>
-    </div>
-    <div class="card" id="noticeBoard">
-      <div class="card-header"><h3>Posted Notices</h3></div>
-      <div class="notice-item"><div class="notice-dot"></div><div class="notice-content"><h4>Summer Vacation 2026</h4><p>School closed May 20 – June 15. Classes resume June 16.</p></div><span class="notice-date">May 15</span></div>
-      <div class="notice-item"><div class="notice-dot"></div><div class="notice-content"><h4>Fee Payment Deadline</h4><p>Term 2 fees due before May 31, 2026.</p></div><span class="notice-date">May 10</span></div>
-    </div>
-  </div>
+    </div>`;
+      }).join('');
 
-  <!-- GALLERY -->
-  <div class="page" id="page-gallery">
-    <div class="card">
-      <div class="card-header"><h3>Upload Photos</h3><button class="btn-sm btn-gold" onclick="document.getElementById('photoUpload').click()">+ Upload Photo</button></div>
-      <input type="file" id="photoUpload" accept="image/*" multiple style="display:none" onchange="handleUpload(event)"/>
-      <div class="gallery-admin" id="galleryGrid">
-        <div class="gallery-admin-item" onclick="document.getElementById('photoUpload').click()"><span>➕</span><p>Add Photo</p></div>
-        <div class="gallery-admin-item" style="background:linear-gradient(135deg,var(--navy),#1e3a8a);border:none;"><span style="font-size:2rem;color:white;">🏫</span></div>
-        <div class="gallery-admin-item" style="background:linear-gradient(135deg,#1a2d6b,#2a4a9c);border:none;"><span style="font-size:2rem;color:white;">🔬</span></div>
-        <div class="gallery-admin-item" style="background:linear-gradient(135deg,#0d2b1e,#1a4a30);border:none;"><span style="font-size:2rem;color:white;">🌿</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
+      renderAttLog();
+    }
 
-<script>
-document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-document.getElementById('attDate').valueAsDate = new Date();
-document.getElementById('noticeDate').valueAsDate = new Date();
+    async function saveAttendance() {
+      const date = document.getElementById('attDate').value;
+      if (!date) { alert('Select a date.'); return; }
+      await fbSet(`attendance/${date}`, { arsh: attSel.arsh, samyak: attSel.samyak, tejas: attSel.tejas, savedBy: 'Admin' });
+      renderAttLog();
+      alert('✅ Attendance saved!');
+    }
 
-// ── Attendance state ──
-const attSel = {arsh:'P', samyak:'P', tejas:'P'};
-function pickAtt(sid, val){
-  attSel[sid] = val;
-  ['P','A'].forEach(v=>{ const b=document.getElementById(`adm-${sid}-${v}`); if(b) b.classList.toggle('selected',v===val); });
-}
+    async function renderAttLog() {
+      const area = document.getElementById('attLogArea');
+      if (!area) return;
+      const data = await fbGet('attendance') || {};
+      const entries = Object.entries(data);
+      if (!entries.length) { area.innerHTML = '<p style="color:var(--gray);padding:10px;">No attendance recorded yet.</p>'; return; }
+      const badge = s => s === 'P' ? '<span class="badge badge-green">P</span>' : '<span class="badge badge-red">A</span>';
+      let h = '<table><tr><th>Date</th><th>Arsh</th><th>Samyak</th><th>Tejas</th><th>By</th></tr>';
+      entries.sort((a, b) => b[0].localeCompare(a[0])).forEach(([d, v]) => { h += `<tr><td>${d}</td><td>${badge(v.arsh)}</td><td>${badge(v.samyak)}</td><td>${badge(v.tejas)}</td><td>${v.savedBy || ''}</td></tr>`; });
+      area.innerHTML = h + '</table>';
+    }
 
-async function saveAttendance(){
-  const date = document.getElementById('attDate').value;
-  if(!date){alert('Select a date.');return;}
-  await fbSet(`attendance/${date}`, {arsh:attSel.arsh, samyak:attSel.samyak, tejas:attSel.tejas, savedBy:'Admin'});
-  renderAttLog();
-  alert('✅ Attendance saved!');
-}
+    // ── Students ──
+    async function addStudent() {
+      const n = document.getElementById('sName').value.trim(), r = document.getElementById('sRoll').value.trim(),
+        c = document.getElementById('sClass').value, p = document.getElementById('sParent').value.trim(),
+        ph = document.getElementById('sPhone').value.trim(), dob = document.getElementById('sDob').value;
+      if (!n || !r) { alert('Fill Name and Roll Number.'); return; }
+      const username = n.split(' ')[0].toUpperCase() + r;
+      const password = Math.floor(1000 + Math.random() * 9000).toString();
+      await fbPush('admin_students', { name: n, roll: r, cls: c, parent: p, phone: ph, dob, username, addedOn: new Date().toLocaleDateString('en-IN') });
+      await fbPush('credentials', { type: 'Student', name: n, username, password, cls: c, roll: r, addedOn: new Date().toLocaleDateString('en-IN') });
+      ['sName', 'sRoll', 'sParent', 'sPhone', 'sDob'].forEach(id => document.getElementById(id).value = '');
+      renderStudents();
+      renderCredentials();
+      alert(`✅ Student added!\n\n🔑 Login Credentials:\nUsername: ${username}\nPassword: ${password}`);
+    }
 
-async function renderAttLog(){
-  const area = document.getElementById('attLogArea');
-  if(!area) return;
-  const data = await fbGet('attendance') || {};
-  const entries = Object.entries(data);
-  if(!entries.length){area.innerHTML='<p style="color:var(--gray);padding:10px;">No attendance recorded yet.</p>';return;}
-  const badge = s => s==='P'?'<span class="badge badge-green">P</span>':'<span class="badge badge-red">A</span>';
-  let h='<table><tr><th>Date</th><th>Arsh</th><th>Samyak</th><th>Tejas</th><th>By</th></tr>';
-  entries.sort((a,b)=>b[0].localeCompare(a[0])).forEach(([d,v])=>{ h+=`<tr><td>${d}</td><td>${badge(v.arsh)}</td><td>${badge(v.samyak)}</td><td>${badge(v.tejas)}</td><td>${v.savedBy||''}</td></tr>`; });
-  area.innerHTML = h+'</table>';
-}
+    async function renderStudents() {
+      const tb = document.getElementById('studentTable');
+      tb.innerHTML = '<tr><th>Name</th><th>Roll No</th><th>Class</th><th>Parent</th><th>Contact</th><th>Action</th></tr>';
+      // Fixed portal students
+      ['Arsh Raj|13|X – A|—|—', 'Samyak Mishra|23|X – A|—|—', 'Tejas Vinayak|43|X – A|—|—'].forEach(s => {
+        const [nm, rl, cl, pr, ph] = s.split('|');
+        tb.innerHTML += `<tr><td>${nm}</td><td>${rl}</td><td>${cl}</td><td>${pr}</td><td>${ph}</td><td><span class="badge badge-green">Portal Active</span></td></tr>`;
+      });
+      const data = await fbGet('admin_students') || {};
+      Object.entries(data).forEach(([key, s]) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${s.name}</td><td>${s.roll}</td><td>${s.cls}</td><td>${s.parent || '—'}</td><td>${s.phone || '—'}</td><td><button class="btn-sm btn-red" onclick="delStudent('${key}')">Remove</button></td>`;
+        tb.appendChild(tr);
+      });
+    }
 
-// ── Students ──
-async function addStudent(){
-  const n=document.getElementById('sName').value.trim(), r=document.getElementById('sRoll').value.trim(),
-        c=document.getElementById('sClass').value, p=document.getElementById('sParent').value.trim(),
-        ph=document.getElementById('sPhone').value.trim(), dob=document.getElementById('sDob').value;
-  if(!n||!r){alert('Fill Name and Roll Number.');return;}
-  await fbPush('admin_students', {name:n,roll:r,cls:c,parent:p,phone:ph,dob,addedOn:new Date().toLocaleDateString('en-IN')});
-  ['sName','sRoll','sParent','sPhone','sDob'].forEach(id=>document.getElementById(id).value='');
-  renderStudents();
-  alert('✅ Student added!');
-}
+    async function delStudent(key) { await fbDelete(`admin_students/${key}`); renderStudents(); }
 
-async function renderStudents(){
-  const tb = document.getElementById('studentTable');
-  tb.innerHTML='<tr><th>Name</th><th>Roll No</th><th>Class</th><th>Parent</th><th>Contact</th><th>Action</th></tr>';
-  // Fixed portal students
-  ['Arsh Raj|13|X – A|—|—','Samyak Mishra|23|X – A|—|—','Tejas Vinayak|43|X – A|—|—'].forEach(s=>{
-    const[nm,rl,cl,pr,ph]=s.split('|');
-    tb.innerHTML+=`<tr><td>${nm}</td><td>${rl}</td><td>${cl}</td><td>${pr}</td><td>${ph}</td><td><span class="badge badge-green">Portal Active</span></td></tr>`;
-  });
-  const data = await fbGet('admin_students') || {};
-  Object.entries(data).forEach(([key,s])=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${s.name}</td><td>${s.roll}</td><td>${s.cls}</td><td>${s.parent||'—'}</td><td>${s.phone||'—'}</td><td><button class="btn-sm btn-red" onclick="delStudent('${key}')">Remove</button></td>`;
-    tb.appendChild(tr);
-  });
-}
+    // ── Teachers ──
+    async function addTeacher() {
+      const n = document.getElementById('tName').value.trim(), s = document.getElementById('tSubject').value.trim(),
+        q = document.getElementById('tQual').value.trim(), p = document.getElementById('tPhone').value.trim();
+      if (!n) { alert('Enter teacher name.'); return; }
+      const username = n.replace(/^Mr\.?\s*|^Ms\.?\s*|^Mrs\.?\s*/i, '').split(' ')[0].toUpperCase();
+      const password = Math.floor(1000 + Math.random() * 9000).toString();
+      await fbPush('admin_teachers', { name: n, subject: s, qual: q, phone: p, addedOn: new Date().toLocaleDateString('en-IN') });
+      await fbPush('credentials', { type: 'Teacher', name: n, username, password, subject: s, addedOn: new Date().toLocaleDateString('en-IN') });
+      ['tName', 'tSubject', 'tQual', 'tPhone'].forEach(id => document.getElementById(id).value = '');
+      renderTeachers();
+      renderCredentials();
+      alert(`✅ Teacher added!\n\n🔑 Login Credentials:\nUsername: ${username}\nPassword: ${password}`);
+    }
 
-async function delStudent(key){ await fbDelete(`admin_students/${key}`); renderStudents(); }
+    async function renderTeachers() {
+      const tb = document.getElementById('teacherTable');
+      tb.innerHTML = '<tr><th>Name</th><th>Subject</th><th>Qualification</th><th>Contact</th><th>Action</th></tr>';
+      // Fixed teachers
+      ['Mr. Tapan|—|—|—', 'Mr. Vaskar|—|—|—'].forEach(t => {
+        const [nm, s, q, p] = t.split('|');
+        tb.innerHTML += `<tr><td>${nm}</td><td>${s}</td><td>${q}</td><td>${p}</td><td><span class="badge badge-gold">Portal Active</span></td></tr>`;
+      });
+      const data = await fbGet('admin_teachers') || {};
+      Object.entries(data).forEach(([key, t]) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${t.name}</td><td>${t.subject || '—'}</td><td>${t.qual || '—'}</td><td>${t.phone || '—'}</td><td><button class="btn-sm btn-red" onclick="delTeacher('${key}')">Remove</button></td>`;
+        tb.appendChild(tr);
+      });
+    }
 
-// ── Teachers ──
-async function addTeacher(){
-  const n=document.getElementById('tName').value.trim(), s=document.getElementById('tSubject').value.trim(),
-        q=document.getElementById('tQual').value.trim(), p=document.getElementById('tPhone').value.trim();
-  if(!n){alert('Enter teacher name.');return;}
-  await fbPush('admin_teachers', {name:n,subject:s,qual:q,phone:p,addedOn:new Date().toLocaleDateString('en-IN')});
-  ['tName','tSubject','tQual','tPhone'].forEach(id=>document.getElementById(id).value='');
-  renderTeachers();
-  alert('✅ Teacher added!');
-}
+    async function delTeacher(key) { await fbDelete(`admin_teachers/${key}`); renderTeachers(); }
 
-async function renderTeachers(){
-  const tb = document.getElementById('teacherTable');
-  tb.innerHTML='<tr><th>Name</th><th>Subject</th><th>Qualification</th><th>Contact</th><th>Action</th></tr>';
-  // Fixed teachers
-  ['Mr. Tapan|—|—|—','Mr. Vaskar|—|—|—'].forEach(t=>{
-    const[nm,s,q,p]=t.split('|');
-    tb.innerHTML+=`<tr><td>${nm}</td><td>${s}</td><td>${q}</td><td>${p}</td><td><span class="badge badge-gold">Portal Active</span></td></tr>`;
-  });
-  const data = await fbGet('admin_teachers') || {};
-  Object.entries(data).forEach(([key,t])=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${t.name}</td><td>${t.subject||'—'}</td><td>${t.qual||'—'}</td><td>${t.phone||'—'}</td><td><button class="btn-sm btn-red" onclick="delTeacher('${key}')">Remove</button></td>`;
-    tb.appendChild(tr);
-  });
-}
+    // ── Notices ──
+    async function postNotice() {
+      const t = document.getElementById('noticeTitle').value.trim(),
+        c = document.getElementById('noticeContent').value.trim(),
+        d = document.getElementById('noticeDate').value,
+        cat = document.getElementById('noticeCat').value;
+      if (!t || !c) { alert('Fill title and content.'); return; }
+      await fbPush('notices', { title: t, content: c, date: d, category: cat, postedBy: 'Admin', postedAt: new Date().toLocaleDateString('en-IN') });
+      // Keep max 5 notices — delete oldest if exceeded
+      const all = await fbGet('notices') || {};
+      const keys = Object.keys(all).sort();
+      if (keys.length > 5) { await fbDelete(`notices/${keys[0]}`); }
+      document.getElementById('noticeTitle').value = ''; document.getElementById('noticeContent').value = '';
+      renderNotices();
+      alert('✅ Notice posted! (Oldest auto-removed if > 5 notices)');
+    }
 
-async function delTeacher(key){ await fbDelete(`admin_teachers/${key}`); renderTeachers(); }
+    async function renderCredentials() {
+      const el = document.getElementById('credsList');
+      if (!el) return;
+      const data = await fbGet('credentials') || {};
+      const entries = Object.entries(data);
+      if (!entries.length) { el.innerHTML = '<p style="color:var(--gray);font-size:0.85rem;">No credentials generated yet.</p>'; return; }
+      let h = '<table><tr><th>Type</th><th>Name</th><th>Username</th><th>Password</th><th>Date</th></tr>';
+      entries.sort((a, b) => b[0].localeCompare(a[0])).forEach(([key, cr]) => {
+        h += `<tr><td><span class="badge ${cr.type === 'Teacher' ? 'badge-gold' : 'badge-blue'}">${cr.type}</span></td><td>${cr.name}</td><td><strong>${cr.username}</strong></td><td><strong>${cr.password}</strong></td><td>${cr.addedOn}</td></tr>`;
+      });
+      el.innerHTML = h + '</table>';
+    }
 
-// ── Notices ──
-async function postNotice(){
-  const t=document.getElementById('noticeTitle').value.trim(),
-        c=document.getElementById('noticeContent').value.trim(),
-        d=document.getElementById('noticeDate').value,
-        cat=document.getElementById('noticeCat').value;
-  if(!t||!c){alert('Fill title and content.');return;}
-  await fbPush('notices', {title:t, content:c, date:d, category:cat, postedBy:'Admin', postedAt:new Date().toLocaleDateString('en-IN')});
-  document.getElementById('noticeTitle').value=''; document.getElementById('noticeContent').value='';
-  renderNotices();
-  alert('✅ Notice posted!');
-}
+    async function renderNotices() {
+      const board = document.getElementById('noticeBoard');
+      board.innerHTML = '<div class="card-header"><h3>Posted Notices</h3></div>';
+      const data = await fbGet('notices') || {};
+      const entries = Object.entries(data);
+      if (!entries.length) { board.innerHTML += '<p style="color:var(--gray);padding:10px;">No notices posted yet.</p>'; return; }
+      entries.sort((a, b) => b[0].localeCompare(a[0])).forEach(([key, n]) => {
+        board.innerHTML += `<div class="notice-item"><div class="notice-dot"></div><div class="notice-content"><h4>${n.title} <span class="badge badge-gold">${n.category || 'General'}</span></h4><p>${n.content}</p></div><div style="text-align:right;"><span class="notice-date">${n.date}</span><br><button class="btn-sm btn-red" style="margin-top:6px;font-size:0.7rem;padding:4px 10px;" onclick="delNotice('${key}')">Delete</button></div></div>`;
+      });
+    }
 
-async function renderNotices(){
-  const board = document.getElementById('noticeBoard');
-  board.innerHTML='<div class="card-header"><h3>Posted Notices</h3></div>';
-  const data = await fbGet('notices') || {};
-  const entries = Object.entries(data);
-  if(!entries.length){board.innerHTML+='<p style="color:var(--gray);padding:10px;">No notices posted yet.</p>';return;}
-  entries.sort((a,b)=>b[0].localeCompare(a[0])).forEach(([key,n])=>{
-    board.innerHTML+=`<div class="notice-item"><div class="notice-dot"></div><div class="notice-content"><h4>${n.title} <span class="badge badge-gold">${n.category||'General'}</span></h4><p>${n.content}</p></div><div style="text-align:right;"><span class="notice-date">${n.date}</span><br><button class="btn-sm btn-red" style="margin-top:6px;font-size:0.7rem;padding:4px 10px;" onclick="delNotice('${key}')">Delete</button></div></div>`;
-  });
-}
+    async function delNotice(key) { await fbDelete(`notices/${key}`); renderNotices(); }
 
-async function delNotice(key){ await fbDelete(`notices/${key}`); renderNotices(); }
+    // ── Gallery ──
+    async function handleUpload(e) {
+      const files = Array.from(e.target.files);
+      for (const f of files) {
+        const reader = new FileReader();
+        reader.onload = async ev => {
+          const base64 = ev.target.result;
+          await fbPush('gallery', { img: base64, name: f.name, date: new Date().toLocaleDateString('en-IN') });
+          renderGallery();
+        };
+        reader.readAsDataURL(f);
+      }
+    }
 
-// ── Gallery ──
-async function handleUpload(e){
-  const files=Array.from(e.target.files);
-  for(const f of files){
-    const reader=new FileReader();
-    reader.onload = async ev=>{
-      const base64 = ev.target.result;
-      await fbPush('gallery', {img:base64, name:f.name, date:new Date().toLocaleDateString('en-IN')});
-      renderGallery();
-    };
-    reader.readAsDataURL(f);
-  }
-}
+    async function renderGallery() {
+      const grid = document.getElementById('galleryGrid');
+      grid.innerHTML = `<div class="gallery-admin-item" onclick="document.getElementById('photoUpload').click()"><span>➕</span><p>Add Photo</p></div>`;
+      const data = await fbGet('gallery') || {};
+      Object.entries(data).forEach(([key, g]) => {
+        const div = document.createElement('div'); div.className = 'gallery-admin-item'; div.style.border = 'none'; div.style.position = 'relative';
+        div.innerHTML = `<img src="${g.img}" style="width:100%;height:100%;object-fit:cover;"/><button onclick="delPhoto('${key}')" style="position:absolute;top:4px;right:4px;background:#c0392b;color:#fff;border:none;border-radius:4px;padding:2px 7px;cursor:pointer;font-size:0.7rem;">✕</button>`;
+        grid.appendChild(div);
+      });
+    }
 
-async function renderGallery(){
-  const grid = document.getElementById('galleryGrid');
-  grid.innerHTML=`<div class="gallery-admin-item" onclick="document.getElementById('photoUpload').click()"><span>➕</span><p>Add Photo</p></div>`;
-  const data = await fbGet('gallery') || {};
-  Object.entries(data).forEach(([key,g])=>{
-    const div=document.createElement('div'); div.className='gallery-admin-item'; div.style.border='none'; div.style.position='relative';
-    div.innerHTML=`<img src="${g.img}" style="width:100%;height:100%;object-fit:cover;"/><button onclick="delPhoto('${key}')" style="position:absolute;top:4px;right:4px;background:#c0392b;color:#fff;border:none;border-radius:4px;padding:2px 7px;cursor:pointer;font-size:0.7rem;">✕</button>`;
-    grid.appendChild(div);
-  });
-}
+    async function delPhoto(key) { await fbDelete(`gallery/${key}`); renderGallery(); }
 
-async function delPhoto(key){ await fbDelete(`gallery/${key}`); renderGallery(); }
+    // ── Dashboard stats ──
+    async function updateDash() {
+      const students = await fbGet('admin_students') || {};
+      const teachers = await fbGet('admin_teachers') || {};
+      const notices = await fbGet('notices') || {};
+      const att = await fbGet('attendance') || {};
+      const total = Object.keys(att).length;
+      let presentSum = 0, count = 0;
+      Object.values(att).forEach(v => { ['arsh', 'samyak', 'tejas'].forEach(s => { if (v[s] === 'P') presentSum++; count++; }); });
+      const avgAtt = count > 0 ? Math.round(presentSum / count * 100) + '%' : '—';
+      document.querySelector('.stats-row .stat-box:nth-child(1) .sb-num').textContent = 3 + Object.keys(students).length;
+      document.querySelector('.stats-row .stat-box:nth-child(2) .sb-num').textContent = 2 + Object.keys(teachers).length;
+      document.querySelector('.stats-row .stat-box:nth-child(3) .sb-num').textContent = avgAtt;
+      document.querySelector('.stats-row .stat-box:nth-child(4) .sb-num').textContent = Object.keys(notices).length;
+    }
 
-// ── Dashboard stats ──
-async function updateDash(){
-  const students = await fbGet('admin_students')||{};
-  const teachers = await fbGet('admin_teachers')||{};
-  const notices  = await fbGet('notices')||{};
-  const att      = await fbGet('attendance')||{};
-  const total = Object.keys(att).length;
-  let presentSum=0, count=0;
-  Object.values(att).forEach(v=>{ ['arsh','samyak','tejas'].forEach(s=>{ if(v[s]==='P') presentSum++; count++; }); });
-  const avgAtt = count>0 ? Math.round(presentSum/count*100)+'%' : '—';
-  document.querySelector('.stats-row .stat-box:nth-child(1) .sb-num').textContent = 3 + Object.keys(students).length;
-  document.querySelector('.stats-row .stat-box:nth-child(2) .sb-num').textContent = 2 + Object.keys(teachers).length;
-  document.querySelector('.stats-row .stat-box:nth-child(3) .sb-num').textContent = avgAtt;
-  document.querySelector('.stats-row .stat-box:nth-child(4) .sb-num').textContent = Object.keys(notices).length;
-}
+    function showPage(id, el) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+      document.getElementById('page-' + id).classList.add('active');
+      if (el) el.classList.add('active');
+      const titles = { dashboard: 'Dashboard', students: 'Students Management', teachers: 'Teachers Management', attendance: 'Attendance', notices: 'Notice Board', gallery: 'Photo Gallery' };
+      document.getElementById('pageTitle').textContent = titles[id] || id;
+      if (id === 'students') renderStudents();
+      if (id === 'teachers') renderTeachers();
+      if (id === 'attendance') renderAttLog();
+      if (id === 'notices') renderNotices();
+      if (id === 'gallery') renderGallery();
+      if (id === 'dashboard') { updateDash(); renderCredentials(); }
+    }
 
-function showPage(id, el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(el) el.classList.add('active');
-  const titles={dashboard:'Dashboard',students:'Students Management',teachers:'Teachers Management',attendance:'Attendance',notices:'Notice Board',gallery:'Photo Gallery'};
-  document.getElementById('pageTitle').textContent=titles[id]||id;
-  if(id==='students') renderStudents();
-  if(id==='teachers') renderTeachers();
-  if(id==='attendance') renderAttLog();
-  if(id==='notices') renderNotices();
-  if(id==='gallery') renderGallery();
-  if(id==='dashboard') updateDash();
-}
+    function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
 
-function logout(){ sessionStorage.clear(); window.location.href='login.html'; }
-
-// Init
-updateDash();
-</script>
+    // Init
+    updateDash();
+    renderCredentials();
+  </script>
 </body>
+
 </html>

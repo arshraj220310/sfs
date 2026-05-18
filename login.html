@@ -6,6 +6,7 @@
 <title>Login – St. Francis School Deoghar</title>
 <link rel="stylesheet" href="style.css"/>
 <link rel="icon" href="PICS/LOGO.jpg" type="image/jpeg"/>
+<script src="sfs-data.js"></script>
 <style>
 body { background: linear-gradient(135deg, var(--navy) 0%, #1a2d6b 50%, #0d1b3e 100%); min-height: 100vh; display: flex; flex-direction: column; }
 .login-page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 100px 20px 40px; position: relative; overflow: hidden; }
@@ -109,32 +110,66 @@ function setRole(r){
   document.getElementById('errorMsg').style.display = 'none';
 }
 
-function doLogin(){
+async function doLogin(){
   const u = document.getElementById('username').value.trim().toUpperCase();
   const p = document.getElementById('password').value.trim();
   document.getElementById('errorMsg').style.display = 'none';
+  const btn = document.querySelector('.btn-login-submit');
+  btn.textContent = 'Checking…'; btn.disabled = true;
 
-  if(currentRole === 'admin'){
-    if(u === 'ADMIN' && p === '0000'){
-      sessionStorage.setItem('sfs_role','admin');
-      window.location.href = 'admin.html';
-    } else { document.getElementById('errorMsg').style.display='block'; }
-  }
-  else if(currentRole === 'teacher'){
-    const tMap = { TAPAN:'Mr. Tapan', VASKAR:'Mr. Vaskar' };
-    if(tMap[u] && p === '1111'){
-      sessionStorage.setItem('sfs_role','teacher');
-      sessionStorage.setItem('sfs_teacher_name', tMap[u]);
-      window.location.href = 'teacher.html';
-    } else { document.getElementById('errorMsg').style.display='block'; }
-  }
-  else if(currentRole === 'student'){
-    const key = u.toLowerCase();
-    if(STUDENT_MAP[key] && p === '1234'){
-      sessionStorage.setItem('sfs_role','student');
-      sessionStorage.setItem('sfs_student_id', key);
-      window.location.href = 'parent.html';
-    } else { document.getElementById('errorMsg').style.display='block'; }
+  try {
+    if(currentRole === 'admin'){
+      if(u === 'ADMIN' && p === '0000'){
+        sessionStorage.setItem('sfs_role','admin');
+        window.location.href = 'admin.html'; return;
+      }
+      document.getElementById('errorMsg').style.display='block';
+    }
+    else if(currentRole === 'teacher'){
+      const tMap = { TAPAN:'Mr. Tapan', VASKAR:'Mr. Vaskar' };
+      if(tMap[u] && p === '1111'){
+        sessionStorage.setItem('sfs_role','teacher');
+        sessionStorage.setItem('sfs_teacher_name', tMap[u]);
+        window.location.href = 'teacher.html'; return;
+      }
+      // Check Firebase for admin-added teachers
+      const creds = await fbGet('credentials');
+      if(creds){
+        const match = Object.values(creds).find(c => c.type==='Teacher' && c.username && c.username.toUpperCase()===u && c.password===p);
+        if(match){
+          sessionStorage.setItem('sfs_role','teacher');
+          sessionStorage.setItem('sfs_teacher_name', match.name);
+          window.location.href = 'teacher.html'; return;
+        }
+      }
+      document.getElementById('errorMsg').style.display='block';
+    }
+    else if(currentRole === 'student'){
+      const key = u.toLowerCase();
+      if(STUDENT_MAP[key] && p === '1234'){
+        sessionStorage.setItem('sfs_role','student');
+        sessionStorage.setItem('sfs_student_id', key);
+        window.location.href = 'parent.html'; return;
+      }
+      // Check Firebase for admin-added students
+      const creds = await fbGet('credentials');
+      if(creds){
+        const match = Object.values(creds).find(c => c.type==='Student' && c.username && c.username.toUpperCase()===u && c.password===p);
+        if(match){
+          sessionStorage.setItem('sfs_role','student');
+          sessionStorage.setItem('sfs_student_id','custom');
+          sessionStorage.setItem('sfs_student_profile', JSON.stringify({
+            name:match.name, roll:match.roll||'—', admNo:'—', cls:match.cls||'—', username:match.username
+          }));
+          window.location.href = 'parent.html'; return;
+        }
+      }
+      document.getElementById('errorMsg').style.display='block';
+    }
+  } catch(e){
+    document.getElementById('errorMsg').style.display='block';
+  } finally {
+    btn.textContent = 'Login →'; btn.disabled = false;
   }
 }
 document.addEventListener('keydown', e => { if(e.key === 'Enter') doLogin(); });

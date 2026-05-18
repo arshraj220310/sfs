@@ -1,275 +1,690 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Student Portal – St. Francis School</title>
-<link rel="stylesheet" href="style.css"/>
-<link rel="icon" href="PICS/LOGO.jpg" type="image/jpeg"/>
-<script src="sfs-data.js"></script>
-<style>
-body{background:#f0f2f8;}
-.dash-layout{display:flex;min-height:100vh;}
-.sidebar{width:240px;background:linear-gradient(180deg,#0d2b1e,#0a1f15);min-height:100vh;position:fixed;top:0;left:0;z-index:100;display:flex;flex-direction:column;border-right:2px solid var(--gold);}
-.sidebar-brand{padding:22px 18px;border-bottom:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;gap:10px;}
-.sidebar-brand img{width:42px;height:42px;border-radius:50%;border:2px solid var(--gold);}
-.sidebar-brand .t{font-family:'Playfair Display',serif;font-size:0.85rem;color:var(--white);line-height:1.3;}
-.sidebar-brand .t span{display:block;color:var(--gold);font-size:0.62rem;letter-spacing:2px;font-family:'Inter',sans-serif;font-weight:600;}
-.sidebar-menu{flex:1;padding:16px 10px;}
-.menu-label{color:rgba(255,255,255,0.3);font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:0 10px;margin:14px 0 6px;}
-.menu-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,0.65);font-size:0.85rem;font-weight:500;cursor:pointer;transition:var(--transition);margin-bottom:3px;}
-.menu-item:hover,.menu-item.active{background:rgba(201,168,76,0.12);color:var(--gold);}
-.menu-item .icon{font-size:1rem;width:20px;text-align:center;}
-.sidebar-footer{padding:14px 10px;border-top:1px solid rgba(201,168,76,0.15);}
-.logout-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,0.5);font-size:0.85rem;cursor:pointer;}
-.logout-btn:hover{color:#ff6b6b;background:rgba(192,57,43,0.1);}
-.main-content{margin-left:240px;flex:1;}
-.topbar{background:var(--white);border-bottom:1px solid var(--light-gray);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
-.topbar h2{font-size:1.2rem;color:var(--navy);}
-.s-badge{background:linear-gradient(135deg,#0d2b1e,#1a4a30);color:var(--white);font-size:0.78rem;font-weight:700;padding:6px 14px;border-radius:20px;}
-.page{padding:28px;display:none;} .page.active{display:block;}
-.profile-banner{background:linear-gradient(135deg,var(--navy),#1a3a7c);border-radius:var(--radius-lg);padding:28px;display:flex;align-items:center;gap:24px;margin-bottom:24px;box-shadow:var(--shadow-lg);}
-.p-avatar{width:80px;height:80px;border-radius:50%;background:rgba(201,168,76,0.2);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:2.5rem;flex-shrink:0;}
-.p-info h2{color:var(--white);font-size:1.3rem;margin-bottom:4px;}
-.p-info p{color:rgba(255,255,255,0.65);font-size:0.85rem;}
-.p-meta{margin-left:auto;display:flex;gap:20px;}
-.pm{text-align:center;}
-.pm .mv{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold);font-weight:700;}
-.pm .ml{font-size:0.7rem;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;}
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px;}
-.stat-box{background:var(--white);border-radius:var(--radius);padding:18px;border-left:4px solid var(--gold);box-shadow:var(--shadow);}
-.stat-box .sb-num{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:var(--navy);}
-.stat-box .sb-label{color:var(--gray);font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;}
-.card{background:var(--white);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow);margin-bottom:22px;}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-.card-header h3{font-size:1.05rem;color:var(--navy);}
-table{width:100%;border-collapse:collapse;}
-th{background:var(--off-white);color:var(--navy);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--light-gray);}
-td{padding:11px 14px;font-size:0.875rem;color:var(--gray);border-bottom:1px solid var(--light-gray);}
-tr:last-child td{border-bottom:none;} tr:hover td{background:#fafbff;color:var(--navy);}
-.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:700;}
-.badge-green{background:#d4edda;color:#155724;} .badge-red{background:#f8d7da;color:#721c24;} .badge-gold{background:rgba(201,168,76,0.15);color:var(--gold-dark);} .badge-blue{background:#d1ecf1;color:#0c5460;}
-.remark-item{background:var(--off-white);border-radius:var(--radius);padding:16px 18px;border-left:4px solid var(--gold);margin-bottom:12px;}
-.remark-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.remark-teacher{font-weight:600;color:var(--navy);font-size:0.9rem;}
-.remark-date{font-size:0.78rem;color:var(--gray);}
-.remark-text{color:var(--gray);font-size:0.875rem;line-height:1.6;}
-.att-bar{width:100%;height:10px;background:var(--light-gray);border-radius:5px;overflow:hidden;margin-top:4px;}
-.att-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),#e6c95a);}
-.empty{text-align:center;padding:40px 20px;color:var(--gray);}
-.empty .ei{font-size:3rem;margin-bottom:10px;}
-.loading{text-align:center;padding:30px;color:var(--gray);}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Portal – St. Francis School</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="PICS/LOGO.jpg" type="image/jpeg" />
+  <script src="sfs-data.js"></script>
+  <style>
+    body {
+      background: #f0f2f8;
+    }
+
+    .dash-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: linear-gradient(180deg, #0d2b1e, #0a1f15);
+      min-height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      border-right: 2px solid var(--gold);
+    }
+
+    .sidebar-brand {
+      padding: 22px 18px;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-brand img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+    }
+
+    .sidebar-brand .t {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.85rem;
+      color: var(--white);
+      line-height: 1.3;
+    }
+
+    .sidebar-brand .t span {
+      display: block;
+      color: var(--gold);
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+    }
+
+    .sidebar-menu {
+      flex: 1;
+      padding: 16px 10px;
+    }
+
+    .menu-label {
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0 10px;
+      margin: 14px 0 6px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 3px;
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+      background: rgba(201, 168, 76, 0.12);
+      color: var(--gold);
+    }
+
+    .menu-item .icon {
+      font-size: 1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 14px 10px;
+      border-top: 1px solid rgba(201, 168, 76, 0.15);
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      color: #ff6b6b;
+      background: rgba(192, 57, 43, 0.1);
+    }
+
+    .main-content {
+      margin-left: 240px;
+      flex: 1;
+    }
+
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--light-gray);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .topbar h2 {
+      font-size: 1.2rem;
+      color: var(--navy);
+    }
+
+    .s-badge {
+      background: linear-gradient(135deg, #0d2b1e, #1a4a30);
+      color: var(--white);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    .page {
+      padding: 28px;
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .profile-banner {
+      background: linear-gradient(135deg, var(--navy), #1a3a7c);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .p-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(201, 168, 76, 0.2);
+      border: 3px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .p-info h2 {
+      color: var(--white);
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+    }
+
+    .p-info p {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.85rem;
+    }
+
+    .p-meta {
+      margin-left: auto;
+      display: flex;
+      gap: 20px;
+    }
+
+    .pm {
+      text-align: center;
+    }
+
+    .pm .mv {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .pm .ml {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .stat-box {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 18px;
+      border-left: 4px solid var(--gold);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-box .sb-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .stat-box .sb-label {
+      color: var(--gray);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .card-header h3 {
+      font-size: 1.05rem;
+      color: var(--navy);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: var(--off-white);
+      color: var(--navy);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 11px 14px;
+      text-align: left;
+      border-bottom: 2px solid var(--light-gray);
+    }
+
+    td {
+      padding: 11px 14px;
+      font-size: 0.875rem;
+      color: var(--gray);
+      border-bottom: 1px solid var(--light-gray);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #fafbff;
+      color: var(--navy);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .badge-green {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .badge-red {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .badge-gold {
+      background: rgba(201, 168, 76, 0.15);
+      color: var(--gold-dark);
+    }
+
+    .badge-blue {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .remark-item {
+      background: var(--off-white);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      border-left: 4px solid var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .remark-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .remark-teacher {
+      font-weight: 600;
+      color: var(--navy);
+      font-size: 0.9rem;
+    }
+
+    .remark-date {
+      font-size: 0.78rem;
+      color: var(--gray);
+    }
+
+    .remark-text {
+      color: var(--gray);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .att-bar {
+      width: 100%;
+      height: 10px;
+      background: var(--light-gray);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .att-bar-fill {
+      height: 100%;
+      border-radius: 5px;
+      background: linear-gradient(90deg, var(--gold), #e6c95a);
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray);
+    }
+
+    .empty .ei {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: var(--gray);
+    }
+  </style>
 </head>
+
 <body>
-<div class="dash-layout">
-<div class="sidebar">
-  <div class="sidebar-brand"><img src="PICS/LOGO.jpg" alt="Logo"/>
-    <div class="t">ST. FRANCIS<span>Student Portal</span></div>
-  </div>
-  <div class="sidebar-menu">
-    <div class="menu-label">My Dashboard</div>
-    <div class="menu-item active" onclick="showPage('overview',this)"><span class="icon">🏠</span> Overview</div>
-    <div class="menu-item" onclick="showPage('details',this)"><span class="icon">👤</span> My Details</div>
-    <div class="menu-item" onclick="showPage('attendance',this)"><span class="icon">📅</span> Attendance</div>
-    <div class="menu-item" onclick="showPage('marks',this)"><span class="icon">📊</span> Marks &amp; Results</div>
-    <div class="menu-item" onclick="showPage('remarks',this)"><span class="icon">💬</span> Remarks</div>
-  </div>
-  <div class="sidebar-footer"><div class="logout-btn" onclick="logout()"><span>🚪</span> Logout</div></div>
-</div>
-
-<div class="main-content">
-  <div class="topbar">
-    <h2 id="pageTitle">Overview</h2>
-    <div style="display:flex;align-items:center;gap:14px;">
-      <span style="color:var(--gray);font-size:0.83rem;" id="dateStr"></span>
-      <div class="s-badge" id="sBadge">🎓 STUDENT</div>
-    </div>
-  </div>
-
-  <!-- OVERVIEW -->
-  <div class="page active" id="page-overview">
-    <div class="profile-banner">
-      <div class="p-avatar">🎓</div>
-      <div class="p-info">
-        <h2 id="pName">—</h2>
-        <p id="pMeta">—</p>
-        <p style="color:rgba(255,255,255,0.45);font-size:0.8rem;margin-top:4px;">St. Francis School, Deoghar | 2025–26</p>
+  <div class="dash-layout">
+    <div class="sidebar">
+      <div class="sidebar-brand"><img src="PICS/LOGO.jpg" alt="Logo" />
+        <div class="t">ST. FRANCIS<span>Student Portal</span></div>
       </div>
-      <div class="p-meta">
-        <div class="pm"><div class="mv" id="ov-att">—</div><div class="ml">Attendance</div></div>
-        <div class="pm"><div class="mv" id="ov-avg">—</div><div class="ml">Avg Marks</div></div>
-        <div class="pm"><div class="mv" id="ov-rem">0</div><div class="ml">Remarks</div></div>
+      <div class="sidebar-menu">
+        <div class="menu-label">My Dashboard</div>
+        <div class="menu-item active" onclick="showPage('overview',this)"><span class="icon">🏠</span> Overview</div>
+        <div class="menu-item" onclick="showPage('details',this)"><span class="icon">👤</span> My Details</div>
+        <div class="menu-item" onclick="showPage('attendance',this)"><span class="icon">📅</span> Attendance</div>
+        <div class="menu-item" onclick="showPage('marks',this)"><span class="icon">📊</span> Marks &amp; Results</div>
+        <div class="menu-item" onclick="showPage('remarks',this)"><span class="icon">💬</span> Remarks</div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="logout-btn" onclick="logout()"><span>🚪</span> Logout</div>
       </div>
     </div>
-    <div class="stats-row">
-      <div class="stat-box"><div class="sb-num" id="st-att">—</div><div class="sb-label">Attendance</div></div>
-      <div class="stat-box" style="border-color:#27ae60"><div class="sb-num" id="st-avg">—</div><div class="sb-label">Avg Marks</div></div>
-      <div class="stat-box" style="border-color:#2980b9"><div class="sb-num" id="st-mc">0</div><div class="sb-label">Marks Entries</div></div>
-    </div>
-    <div class="card">
-      <div class="card-header"><h3>Recent Marks</h3></div>
-      <div id="ovMarks"><div class="loading">Loading…</div></div>
-    </div>
-  </div>
 
-  <!-- DETAILS -->
-  <div class="page" id="page-details">
-    <div class="card">
-      <div class="card-header"><h3>Student Information</h3></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-        <table>
-          <tr><th colspan="2">Personal Details</th></tr>
-          <tr><td style="font-weight:600;color:var(--navy);">Full Name</td><td id="d-name">—</td></tr>
-          <tr><td style="font-weight:600;color:var(--navy);">Roll Number</td><td id="d-roll">—</td></tr>
-          <tr><td style="font-weight:600;color:var(--navy);">Admission No</td><td id="d-adm">—</td></tr>
-          <tr><td style="font-weight:600;color:var(--navy);">Class</td><td id="d-cls">—</td></tr>
-        </table>
-        <table>
-          <tr><th colspan="2">Academic Details</th></tr>
-          <tr><td style="font-weight:600;color:var(--navy);">Section</td><td>A</td></tr>
-          <tr><td style="font-weight:600;color:var(--navy);">Board</td><td>ICSE</td></tr>
-          <tr><td style="font-weight:600;color:var(--navy);">Medium</td><td>English</td></tr>
-          <tr><td style="font-weight:600;color:var(--navy);">Year</td><td>2025 – 26</td></tr>
-        </table>
+    <div class="main-content">
+      <div class="topbar">
+        <h2 id="pageTitle">Overview</h2>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span style="color:var(--gray);font-size:0.83rem;" id="dateStr"></span>
+          <div class="s-badge" id="sBadge">🎓 STUDENT</div>
+        </div>
+      </div>
+
+      <!-- OVERVIEW -->
+      <div class="page active" id="page-overview">
+        <div class="profile-banner">
+          <div class="p-avatar">🎓</div>
+          <div class="p-info">
+            <h2 id="pName">—</h2>
+            <p id="pMeta">—</p>
+            <p style="color:rgba(255,255,255,0.45);font-size:0.8rem;margin-top:4px;">St. Francis School, Deoghar |
+              2025–26</p>
+          </div>
+          <div class="p-meta">
+            <div class="pm">
+              <div class="mv" id="ov-att">—</div>
+              <div class="ml">Attendance</div>
+            </div>
+            <div class="pm">
+              <div class="mv" id="ov-avg">—</div>
+              <div class="ml">Avg Marks</div>
+            </div>
+            <div class="pm">
+              <div class="mv" id="ov-rem">0</div>
+              <div class="ml">Remarks</div>
+            </div>
+          </div>
+        </div>
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="sb-num" id="st-att">—</div>
+            <div class="sb-label">Attendance</div>
+          </div>
+          <div class="stat-box" style="border-color:#27ae60">
+            <div class="sb-num" id="st-avg">—</div>
+            <div class="sb-label">Avg Marks</div>
+          </div>
+          <div class="stat-box" style="border-color:#2980b9">
+            <div class="sb-num" id="st-mc">0</div>
+            <div class="sb-label">Marks Entries</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Recent Marks</h3>
+          </div>
+          <div id="ovMarks">
+            <div class="loading">Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAILS -->
+      <div class="page" id="page-details">
+        <div class="card">
+          <div class="card-header">
+            <h3>Student Information</h3>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <table>
+              <tr>
+                <th colspan="2">Personal Details</th>
+              </tr>
+              <tr>
+                <td style="font-weight:600;color:var(--navy);">Full Name</td>
+                <td id="d-name">—</td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;color:var(--navy);">Roll Number</td>
+                <td id="d-roll">—</td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;color:var(--navy);">Admission No</td>
+                <td id="d-adm">—</td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;color:var(--navy);">Class</td>
+                <td id="d-cls">—</td>
+              </tr>
+            </table>
+            <table>
+              <tr>
+                <th colspan="2">Academic Details</th>
+              </tr>
+              <tr>
+                <td style="font-weight:600;color:var(--navy);">Section</td>
+                <td>A</td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;color:var(--navy);">Board</td>
+                <td>ICSE</td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;color:var(--navy);">Medium</td>
+                <td>English</td>
+              </tr>
+              <tr>
+                <td style="font-weight:600;color:var(--navy);">Year</td>
+                <td>2025 – 26</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE -->
+      <div class="page" id="page-attendance">
+        <div class="card">
+          <div class="card-header">
+            <h3>My Attendance</h3>
+          </div>
+          <div id="attArea">
+            <div class="loading">Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MARKS -->
+      <div class="page" id="page-marks">
+        <div class="card">
+          <div class="card-header">
+            <h3>Marks &amp; Results</h3>
+          </div>
+          <div id="marksArea">
+            <div class="loading">Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REMARKS -->
+      <div class="page" id="page-remarks">
+        <div class="card">
+          <div class="card-header">
+            <h3>Teacher Remarks</h3>
+          </div>
+          <div id="remArea">
+            <div class="loading">Loading…</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ATTENDANCE -->
-  <div class="page" id="page-attendance">
-    <div class="card">
-      <div class="card-header"><h3>My Attendance</h3></div>
-      <div id="attArea"><div class="loading">Loading…</div></div>
-    </div>
-  </div>
+  <script>
+    const sid = sessionStorage.getItem('sfs_student_id') || 'arsh';
+    const SM = { arsh: { name: 'Arsh Raj', roll: '13', admNo: '12345', cls: 'Class X – A' }, samyak: { name: 'Samyak Mishra', roll: '23', admNo: '5678', cls: 'Class X – A' }, tejas: { name: 'Tejas Vinayak', roll: '43', admNo: '8765', cls: 'Class X – A' } };
 
-  <!-- MARKS -->
-  <div class="page" id="page-marks">
-    <div class="card">
-      <div class="card-header"><h3>Marks &amp; Results</h3></div>
-      <div id="marksArea"><div class="loading">Loading…</div></div>
-    </div>
-  </div>
+    // Support admin-added students (id='custom', profile in sessionStorage)
+    let me, fbSid;
+    if (sid === 'custom') {
+      const prof = JSON.parse(sessionStorage.getItem('sfs_student_profile') || '{}');
+      me = prof;
+      fbSid = (prof.username || 'custom').toLowerCase(); // Firebase path for this student
+    } else {
+      me = SM[sid];
+      fbSid = sid;
+    }
 
-  <!-- REMARKS -->
-  <div class="page" id="page-remarks">
-    <div class="card">
-      <div class="card-header"><h3>Teacher Remarks</h3></div>
-      <div id="remArea"><div class="loading">Loading…</div></div>
-    </div>
-  </div>
-</div>
-</div>
+    document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('sBadge').textContent = '🎓 ' + me.name.split(' ')[0].toUpperCase();
+    document.getElementById('pName').textContent = me.name;
+    document.getElementById('pMeta').textContent = `${me.cls} | Roll: ${me.roll} | Adm: ${me.admNo} | ICSE`;
+    ['d-name', 'd-roll', 'd-adm', 'd-cls'].forEach((id, i) => { document.getElementById(id).textContent = [me.name, me.roll, me.admNo, me.cls][i]; });
 
-<script>
-const sid = sessionStorage.getItem('sfs_student_id') || 'arsh';
-const SM = {arsh:{name:'Arsh Raj',roll:'13',admNo:'12345',cls:'Class X – A'},samyak:{name:'Samyak Mishra',roll:'23',admNo:'5678',cls:'Class X – A'},tejas:{name:'Tejas Vinayak',roll:'43',admNo:'8765',cls:'Class X – A'}};
-const me = SM[sid];
+    function getGrade(obt, tot) {
+      const p = (obt / tot) * 100;
+      if (p >= 90) return { g: 'A+', c: 'badge-green' }; if (p >= 80) return { g: 'A', c: 'badge-green' };
+      if (p >= 70) return { g: 'B+', c: 'badge-gold' }; if (p >= 60) return { g: 'B', c: 'badge-gold' };
+      if (p >= 50) return { g: 'C', c: 'badge-gold' }; return { g: 'F', c: 'badge-red' };
+    }
+    function emptyState(msg) { return `<div class="empty"><div class="ei">📭</div><p>${msg}</p></div>`; }
 
-document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-document.getElementById('sBadge').textContent = '🎓 ' + me.name.split(' ')[0].toUpperCase();
-document.getElementById('pName').textContent = me.name;
-document.getElementById('pMeta').textContent = `${me.cls} | Roll: ${me.roll} | Adm: ${me.admNo} | ICSE`;
-['d-name','d-roll','d-adm','d-cls'].forEach((id,i)=>{ document.getElementById(id).textContent=[me.name,me.roll,me.admNo,me.cls][i]; });
+    async function loadOverview() {
+      const marks = await fbGet(`marks/${fbSid}`) || {};
+      const attData = await fbGet('attendance') || {};
+      const rems = await fbGet(`remarks/${fbSid}`) || {};
 
-function getGrade(obt,tot){
-  const p=(obt/tot)*100;
-  if(p>=90)return{g:'A+',c:'badge-green'};if(p>=80)return{g:'A',c:'badge-green'};
-  if(p>=70)return{g:'B+',c:'badge-gold'};if(p>=60)return{g:'B',c:'badge-gold'};
-  if(p>=50)return{g:'C',c:'badge-gold'};return{g:'F',c:'badge-red'};
-}
-function emptyState(msg){return`<div class="empty"><div class="ei">📭</div><p>${msg}</p></div>`;}
+      const mList = Object.values(marks);
+      const mc = mList.length;
+      let avgStr = '—';
+      if (mc > 0) { const avg = mList.reduce((s, m) => s + (m.obtained / m.total * 100), 0) / mc; avgStr = avg.toFixed(1) + '%'; }
 
-async function loadOverview(){
-  const marks = await fbGet(`marks/${sid}`)||{};
-  const attData = await fbGet('attendance')||{};
-  const rems = await fbGet(`remarks/${sid}`)||{};
+      const totalDays = Object.keys(attData).length;
+      let attStr = '—';
+      if (totalDays > 0) { const p = Object.values(attData).filter(v => v[fbSid] === 'P').length; attStr = Math.round(p / totalDays * 100) + '%'; }
 
-  const mList = Object.values(marks);
-  const mc = mList.length;
-  let avgStr='—';
-  if(mc>0){ const avg=mList.reduce((s,m)=>s+(m.obtained/m.total*100),0)/mc; avgStr=avg.toFixed(1)+'%'; }
+      const rc = Object.keys(rems).length;
+      ['ov-att', 'st-att'].forEach(id => document.getElementById(id).textContent = attStr);
+      ['ov-avg', 'st-avg'].forEach(id => document.getElementById(id).textContent = avgStr);
+      document.getElementById('ov-rem').textContent = rc;
+      document.getElementById('st-mc').textContent = mc;
 
-  const totalDays=Object.keys(attData).length;
-  let attStr='—';
-  if(totalDays>0){ const p=Object.values(attData).filter(v=>v[sid]==='P').length; attStr=Math.round(p/totalDays*100)+'%'; }
+      const el = document.getElementById('ovMarks');
+      if (!mc) { el.innerHTML = emptyState('No marks entered by teacher yet.'); return; }
+      let html = '<table><tr><th>Subject</th><th>Exam</th><th>Marks</th><th>Grade</th><th>By</th></tr>';
+      mList.slice(-5).reverse().forEach(m => {
+        const { g, c } = getGrade(m.obtained, m.total);
+        html += `<tr><td>${m.subject}</td><td>${m.exam}</td><td>${m.obtained}/${m.total}</td><td><span class="badge ${c}">${g}</span></td><td>${m.teacher || ''}</td></tr>`;
+      });
+      el.innerHTML = html + '</table>';
+    }
 
-  const rc=Object.keys(rems).length;
-  ['ov-att','st-att'].forEach(id=>document.getElementById(id).textContent=attStr);
-  ['ov-avg','st-avg'].forEach(id=>document.getElementById(id).textContent=avgStr);
-  document.getElementById('ov-rem').textContent=rc;
-  document.getElementById('st-mc').textContent=mc;
-
-  const el=document.getElementById('ovMarks');
-  if(!mc){el.innerHTML=emptyState('No marks entered by teacher yet.');return;}
-  let html='<table><tr><th>Subject</th><th>Exam</th><th>Marks</th><th>Grade</th><th>By</th></tr>';
-  mList.slice(-5).reverse().forEach(m=>{
-    const {g,c}=getGrade(m.obtained,m.total);
-    html+=`<tr><td>${m.subject}</td><td>${m.exam}</td><td>${m.obtained}/${m.total}</td><td><span class="badge ${c}">${g}</span></td><td>${m.teacher||''}</td></tr>`;
-  });
-  el.innerHTML=html+'</table>';
-}
-
-async function loadAttendance(){
-  const el=document.getElementById('attArea');
-  const attData=await fbGet('attendance')||{};
-  const entries=Object.entries(attData);
-  if(!entries.length){el.innerHTML=emptyState('No attendance recorded yet.');return;}
-  const badge=s=>s==='P'?'<span class="badge badge-green">Present</span>':'<span class="badge badge-red">Absent</span>';
-  let html='<table><tr><th>Date</th><th>Status</th></tr>';
-  entries.sort((a,b)=>b[0].localeCompare(a[0])).forEach(([d,v])=>{ html+=`<tr><td>${d}</td><td>${badge(v[sid])}</td></tr>`; });
-  const total=entries.length, present=entries.filter(([,v])=>v[sid]==='P').length;
-  const pct=Math.round(present/total*100);
-  html+=`</table><div style="margin-top:16px;padding:14px;background:var(--off-white);border-radius:10px;font-size:0.875rem;display:flex;gap:24px;">
+    async function loadAttendance() {
+      const el = document.getElementById('attArea');
+      const attData = await fbGet('attendance') || {};
+      const entries = Object.entries(attData);
+      if (!entries.length) { el.innerHTML = emptyState('No attendance recorded yet.'); return; }
+      const badge = s => s === 'P' ? '<span class="badge badge-green">Present</span>' : '<span class="badge badge-red">Absent</span>';
+      let html = '<table><tr><th>Date</th><th>Status</th></tr>';
+      entries.sort((a, b) => b[0].localeCompare(a[0])).forEach(([d, v]) => { html += `<tr><td>${d}</td><td>${badge(v[fbSid])}</td></tr>`; });
+      const total = entries.length, present = entries.filter(([, v]) => v[fbSid] === 'P').length;
+      const pct = Math.round(present / total * 100);
+      html += `</table><div style="margin-top:16px;padding:14px;background:var(--off-white);border-radius:10px;font-size:0.875rem;display:flex;gap:24px;">
     <span><strong>Total Days:</strong> ${total}</span>
     <span><strong>Present:</strong> ${present}</span>
-    <span><strong>Absent:</strong> ${total-present}</span>
+    <span><strong>Absent:</strong> ${total - present}</span>
     <span><strong>Attendance:</strong> ${pct}%
       <div class="att-bar"><div class="att-bar-fill" style="width:${pct}%"></div></div>
     </span></div>`;
-  el.innerHTML=html;
-}
+      el.innerHTML = html;
+    }
 
-async function loadMarks(){
-  const el=document.getElementById('marksArea');
-  const data=await fbGet(`marks/${sid}`)||{};
-  const list=Object.values(data);
-  if(!list.length){el.innerHTML=emptyState('No marks entered by teacher yet. Check back later.');return;}
-  let html='<table><tr><th>Subject</th><th>Exam</th><th>Obtained</th><th>Total</th><th>Grade</th><th>Teacher</th><th>Date</th></tr>';
-  list.forEach(m=>{ const {g,c}=getGrade(m.obtained,m.total); html+=`<tr><td>${m.subject}</td><td>${m.exam}</td><td>${m.obtained}</td><td>${m.total}</td><td><span class="badge ${c}">${g}</span></td><td>${m.teacher||'—'}</td><td>${m.date||'—'}</td></tr>`; });
-  el.innerHTML=html+'</table>';
-}
+    async function loadMarks() {
+      const el = document.getElementById('marksArea');
+      const data = await fbGet(`marks/${fbSid}`) || {};
+      const list = Object.values(data);
+      if (!list.length) { el.innerHTML = emptyState('No marks entered by teacher yet. Check back later.'); return; }
+      let html = '<table><tr><th>Subject</th><th>Exam</th><th>Obtained</th><th>Total</th><th>Grade</th><th>Teacher</th><th>Date</th></tr>';
+      list.forEach(m => { const { g, c } = getGrade(m.obtained, m.total); html += `<tr><td>${m.subject}</td><td>${m.exam}</td><td>${m.obtained}</td><td>${m.total}</td><td><span class="badge ${c}">${g}</span></td><td>${m.teacher || '—'}</td><td>${m.date || '—'}</td></tr>`; });
+      el.innerHTML = html + '</table>';
+    }
 
-async function loadRemarks(){
-  const el=document.getElementById('remArea');
-  const data=await fbGet(`remarks/${sid}`)||{};
-  const list=Object.values(data);
-  if(!list.length){el.innerHTML=emptyState('No remarks from teacher yet.');return;}
-  el.innerHTML=list.map(r=>`
+    async function loadRemarks() {
+      const el = document.getElementById('remArea');
+      const data = await fbGet(`remarks/${fbSid}`) || {};
+      const list = Object.values(data);
+      if (!list.length) { el.innerHTML = emptyState('No remarks from teacher yet.'); return; }
+      el.innerHTML = list.map(r => `
     <div class="remark-item">
       <div class="remark-header">
-        <div class="remark-teacher">${r.teacher||'Teacher'} &nbsp;<span class="badge badge-gold">${r.type}</span></div>
+        <div class="remark-teacher">${r.teacher || 'Teacher'} &nbsp;<span class="badge badge-gold">${r.type}</span></div>
         <div class="remark-date">${r.date}</div>
       </div>
       <div class="remark-text">${r.text}</div>
     </div>`).join('');
-}
+    }
 
-function showPage(id,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(el) el.classList.add('active');
-  const titles={overview:'Overview',details:'My Details',attendance:'Attendance',marks:'Marks & Results',remarks:'Teacher Remarks'};
-  document.getElementById('pageTitle').textContent=titles[id]||id;
-  if(id==='overview') loadOverview();
-  if(id==='attendance') loadAttendance();
-  if(id==='marks') loadMarks();
-  if(id==='remarks') loadRemarks();
-}
+    function showPage(id, el) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+      document.getElementById('page-' + id).classList.add('active');
+      if (el) el.classList.add('active');
+      const titles = { overview: 'Overview', details: 'My Details', attendance: 'Attendance', marks: 'Marks & Results', remarks: 'Teacher Remarks' };
+      document.getElementById('pageTitle').textContent = titles[id] || id;
+      if (id === 'overview') loadOverview();
+      if (id === 'attendance') loadAttendance();
+      if (id === 'marks') loadMarks();
+      if (id === 'remarks') loadRemarks();
+    }
 
-function logout(){ sessionStorage.clear(); window.location.href='login.html'; }
-loadOverview();
-</script>
+    function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
+    loadOverview();
+  </script>
 </body>
+
 </html>

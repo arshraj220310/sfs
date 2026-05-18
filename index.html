@@ -10,6 +10,7 @@
     content="St. Francis School Deoghar – Nurturing minds, inspiring hearts, building a better tomorrow." />
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="PICS/LOGO.jpg" type="image/jpeg" />
+  <script src="sfs-data.js"></script>
   <style>
     .hamburger {
       display: none;
@@ -992,43 +993,31 @@
       <p>Important notices and circulars for students, parents and staff</p>
       <div class="divider"></div>
     </div>
-    <div class="notice-list" style="position:relative;z-index:1;">
-      <div class="notice-item">
-        <div class="notice-dot"></div>
-        <div class="notice-content">
-          <h4>Academic Visit to IIIT Bhagalpur</h4>
-          <p>Classes IX & XI visited IIIT Bhagalpur on January 27, 2026. A promising academic association has been
-            established.</p>
-        </div>
-        <div class="notice-date">Jan 27, 2026</div>
-      </div>
-      <div class="notice-item">
-        <div class="notice-dot"></div>
-        <div class="notice-content">
-          <h4>Admissions Open – Academic Year 2026-27</h4>
-          <p>Admissions are now open for Classes Nursery to IX. Visit the school office or contact us for the
-            prospectus.</p>
-        </div>
-        <div class="notice-date">2026</div>
-      </div>
-      <div class="notice-item">
-        <div class="notice-dot"></div>
-        <div class="notice-content">
-          <h4>CPR Seminar by AIIMS Team</h4>
-          <p>A seminar on CPR was conducted by Dr. Manoj Sarkar and team from AIIMS on May 8, 2025 (Thursday).</p>
-        </div>
-        <div class="notice-date">May 8, 2025</div>
-      </div>
-      <div class="notice-item">
-        <div class="notice-dot"></div>
-        <div class="notice-content">
-          <h4>Career Counselling Seminar</h4>
-          <p>Mr. Neeraj Nachiketa delivered a seminar on Alternate Career Options for Classes X–XII on May 14, 2025.</p>
-        </div>
-        <div class="notice-date">May 14, 2025</div>
-      </div>
+    <div class="notice-list" id="dynamicNoticeList" style="position:relative;z-index:1;">
+      <div class="notice-item"><div class="notice-dot"></div><div class="notice-content"><h4>Academic Visit to IIIT Bhagalpur</h4><p>Classes IX &amp; XI visited IIIT Bhagalpur on January 27, 2026.</p></div><div class="notice-date">Jan 27, 2026</div></div>
+      <div class="notice-item"><div class="notice-dot"></div><div class="notice-content"><h4>Admissions Open – 2026-27</h4><p>Admissions are now open for Classes Nursery to IX.</p></div><div class="notice-date">2026</div></div>
+      <div class="notice-item"><div class="notice-dot"></div><div class="notice-content"><h4>CPR Seminar by AIIMS Team</h4><p>A seminar on CPR was conducted by Dr. Manoj Sarkar and team from AIIMS on May 8, 2025.</p></div><div class="notice-date">May 8, 2025</div></div>
+      <div class="notice-item"><div class="notice-dot"></div><div class="notice-content"><h4>Career Counselling Seminar</h4><p>Mr. Neeraj Nachiketa delivered a seminar on Alternate Career Options for Classes X–XII on May 14, 2025.</p></div><div class="notice-date">May 14, 2025</div></div>
     </div>
   </section>
+  <script>
+  (async function loadAdminNotices(){
+    if(typeof fbGet !== 'function') return;
+    const data = await fbGet('notices');
+    if(!data) return;
+    const list = document.getElementById('dynamicNoticeList');
+    if(!list) return;
+    const entries = Object.entries(data).sort((a,b)=>b[0].localeCompare(a[0]));
+    entries.forEach(([key,n], idx)=>{
+      const div = document.createElement('div');
+      div.className = 'notice-item';
+      const badge = idx===0 ? '<span style="background:var(--gold);color:var(--navy);font-size:0.62rem;font-weight:800;padding:2px 8px;border-radius:10px;letter-spacing:1px;vertical-align:middle;margin-left:8px;">NEW</span>' : '';
+      if(idx===0) div.style.cssText='background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.04));border-left:4px solid var(--gold);border-radius:12px;';
+      div.innerHTML=`<div class="notice-dot" style="${idx===0?'background:var(--gold);':''}"></div><div class="notice-content"><h4>${n.title}${badge}</h4><p>${n.content}</p></div><div class="notice-date">${n.date||n.postedAt||''}</div>`;
+      list.insertBefore(div, list.firstChild);
+    });
+  })();
+  </script>
 
   <!-- GALLERY -->
   <section class="section" id="gallery" style="background:var(--off-white);">
