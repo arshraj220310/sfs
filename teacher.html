@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Teacher Portal – St. Francis School</title>
 <link rel="stylesheet" href="style.css"/>
 <link rel="icon" href="PICS/LOGO.jpg" type="image/jpeg"/>
+<script src="sfs-data.js"></script>
 <style>
 body{background:#f0f2f8;}
 .dash-layout{display:flex;min-height:100vh;}
-.sidebar{width:240px;background:linear-gradient(180deg,#1a3a7c 0%,var(--navy) 100%);min-height:100vh;position:fixed;top:0;left:0;z-index:100;display:flex;flex-direction:column;border-right:2px solid var(--gold);}
+.sidebar{width:240px;background:linear-gradient(180deg,#1a3a7c,var(--navy));min-height:100vh;position:fixed;top:0;left:0;z-index:100;display:flex;flex-direction:column;border-right:2px solid var(--gold);}
 .sidebar-brand{padding:22px 18px;border-bottom:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;gap:10px;}
 .sidebar-brand img{width:42px;height:42px;border-radius:50%;border:2px solid var(--gold);}
 .sidebar-brand .t{font-family:'Playfair Display',serif;font-size:0.85rem;color:var(--white);line-height:1.3;}
@@ -20,59 +20,66 @@ body{background:#f0f2f8;}
 .menu-item:hover,.menu-item.active{background:rgba(201,168,76,0.12);color:var(--gold);}
 .menu-item .icon{font-size:1rem;width:20px;text-align:center;}
 .sidebar-footer{padding:14px 10px;border-top:1px solid rgba(201,168,76,0.15);}
-.logout-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,0.5);font-size:0.85rem;cursor:pointer;transition:var(--transition);}
+.logout-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,0.5);font-size:0.85rem;cursor:pointer;}
 .logout-btn:hover{color:#ff6b6b;background:rgba(192,57,43,0.1);}
 .main-content{margin-left:240px;flex:1;}
 .topbar{background:var(--white);border-bottom:1px solid var(--light-gray);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
 .topbar h2{font-size:1.2rem;color:var(--navy);}
-.teacher-badge{background:linear-gradient(135deg,#1a3a7c,var(--navy));color:var(--white);font-size:0.78rem;font-weight:700;padding:6px 14px;border-radius:20px;}
-.page{padding:28px;display:none;}
-.page.active{display:block;}
+.t-badge{background:linear-gradient(135deg,#1a3a7c,var(--navy));color:var(--white);font-size:0.78rem;font-weight:700;padding:6px 14px;border-radius:20px;}
+.page{padding:28px;display:none;} .page.active{display:block;}
 .card{background:var(--white);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow);margin-bottom:22px;}
 .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
 .card-header h3{font-size:1.05rem;color:var(--navy);}
 table{width:100%;border-collapse:collapse;}
 th{background:var(--off-white);color:var(--navy);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--light-gray);}
 td{padding:11px 14px;font-size:0.875rem;color:var(--gray);border-bottom:1px solid var(--light-gray);}
-tr:last-child td{border-bottom:none;}
-tr:hover td{background:#fafbff;color:var(--navy);}
+tr:last-child td{border-bottom:none;} tr:hover td{background:#fafbff;color:var(--navy);}
 .badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:0.72rem;font-weight:700;}
-.badge-green{background:#d4edda;color:#155724;}
-.badge-red{background:#f8d7da;color:#721c24;}
-.badge-gold{background:rgba(201,168,76,0.15);color:var(--gold-dark);}
+.badge-green{background:#d4edda;color:#155724;} .badge-red{background:#f8d7da;color:#721c24;} .badge-gold{background:rgba(201,168,76,0.15);color:var(--gold-dark);}
 .form-group{margin-bottom:14px;}
 .form-group label{display:block;font-size:0.8rem;font-weight:600;color:var(--navy);margin-bottom:5px;}
-.form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid var(--light-gray);border-radius:8px;padding:9px 12px;font-size:0.875rem;font-family:'Inter',sans-serif;color:var(--navy);transition:var(--transition);}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.12);}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid var(--light-gray);border-radius:8px;padding:9px 12px;font-size:0.875rem;font-family:'Inter',sans-serif;color:var(--navy);}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold);}
 .form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .btn-sm{padding:8px 18px;border:none;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;transition:var(--transition);}
 .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--navy);}
-.btn-navy{background:var(--navy);color:var(--white);}
 .btn-red{background:#c0392b;color:var(--white);}
-.btn-sm:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+.btn-sm:hover{transform:translateY(-2px);}
 .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:22px;}
 .stat-box{background:var(--white);border-radius:var(--radius);padding:20px;border-left:4px solid var(--gold);box-shadow:var(--shadow);}
 .stat-box .sb-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:var(--navy);}
 .stat-box .sb-label{color:var(--gray);font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;}
+.attend-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--light-gray);}
+.attend-row:last-child{border:none;}
+.attend-name{font-weight:600;color:var(--navy);}
+.attend-sub{font-size:0.8rem;color:var(--gray);}
+.att-wrap{display:flex;gap:8px;}
+.att-btn{padding:6px 16px;border:2px solid transparent;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;transition:var(--transition);}
+.att-p{background:#d4edda;color:#155724;border-color:#c3e6cb;}
+.att-a{background:#f8d7da;color:#721c24;border-color:#f5c6cb;}
+.att-btn.selected{transform:scale(1.08);box-shadow:0 2px 10px rgba(0,0,0,0.18);}
+.att-p.selected{background:#27ae60;color:#fff;border-color:#27ae60;}
+.att-a.selected{background:#c0392b;color:#fff;border-color:#c0392b;}
+.toast{background:#d4edda;border:1px solid #c3e6cb;color:#155724;border-radius:8px;padding:10px 16px;margin-bottom:14px;font-size:0.85rem;display:none;}
+.loading{text-align:center;padding:30px;color:var(--gray);font-size:0.9rem;}
 </style>
 </head>
 <body>
 <div class="dash-layout">
 <div class="sidebar">
-  <div class="sidebar-brand">
-    <img src="PICS/LOGO.jpg" alt="Logo"/>
-    <div class="t">ST. FRANCIS<span>Teacher Portal</span></div>
+  <div class="sidebar-brand"><img src="PICS/LOGO.jpg" alt="Logo"/>
+    <div class="t">ST. FRANCIS<span id="sideTeacherName">Teacher Portal</span></div>
   </div>
   <div class="sidebar-menu">
     <div class="menu-label">My Portal</div>
     <div class="menu-item active" onclick="showPage('dashboard',this)"><span class="icon">📊</span> Dashboard</div>
     <div class="menu-item" onclick="showPage('marks',this)"><span class="icon">📝</span> Enter Marks</div>
-    <div class="menu-item" onclick="showPage('students',this)"><span class="icon">🎓</span> Student Details</div>
+    <div class="menu-item" onclick="showPage('attendance',this)"><span class="icon">✅</span> Attendance</div>
     <div class="menu-item" onclick="showPage('remarks',this)"><span class="icon">💬</span> Remarks</div>
+    <div class="menu-item" onclick="showPage('students',this)"><span class="icon">🎓</span> Student Summary</div>
   </div>
-  <div class="sidebar-footer">
-    <div class="logout-btn" onclick="logout()"><span>🚪</span> Logout</div>
-  </div>
+  <div class="sidebar-footer"><div class="logout-btn" onclick="logout()"><span>🚪</span> Logout</div></div>
 </div>
 
 <div class="main-content">
@@ -80,26 +87,23 @@ tr:hover td{background:#fafbff;color:var(--navy);}
     <h2 id="pageTitle">Teacher Dashboard</h2>
     <div style="display:flex;align-items:center;gap:14px;">
       <span style="color:var(--gray);font-size:0.83rem;" id="dateStr"></span>
-      <div class="teacher-badge">👨‍🏫 TEACHER</div>
+      <div class="t-badge" id="teacherBadge">👨‍🏫 TEACHER</div>
     </div>
   </div>
 
   <!-- DASHBOARD -->
   <div class="page active" id="page-dashboard">
     <div class="stats-row">
-      <div class="stat-box"><div class="sb-num">3</div><div class="sb-label">Classes Assigned</div></div>
-      <div class="stat-box" style="border-color:#27ae60"><div class="sb-num">120</div><div class="sb-label">Students Under Me</div></div>
-      <div class="stat-box" style="border-color:#2980b9"><div class="sb-num">5</div><div class="sb-label">Pending Remarks</div></div>
+      <div class="stat-box"><div class="sb-num">3</div><div class="sb-label">Students</div></div>
+      <div class="stat-box" style="border-color:#27ae60"><div class="sb-num" id="dash-marks">…</div><div class="sb-label">Marks Entries</div></div>
+      <div class="stat-box" style="border-color:#2980b9"><div class="sb-num" id="dash-rem">…</div><div class="sb-label">Remarks Posted</div></div>
     </div>
     <div class="card">
-      <div class="card-header"><h3>My Class Schedule</h3></div>
-      <table>
-        <tr><th>Day</th><th>Period 1</th><th>Period 2</th><th>Period 3</th><th>Period 4</th></tr>
-        <tr><td>Monday</td><td>X – A (Physics)</td><td>XII – Sci</td><td>—</td><td>IX – A</td></tr>
-        <tr><td>Tuesday</td><td>—</td><td>X – B (Physics)</td><td>XII – Sci</td><td>—</td></tr>
-        <tr><td>Wednesday</td><td>X – A (Physics)</td><td>—</td><td>IX – A</td><td>XII – Sci</td></tr>
-        <tr><td>Thursday</td><td>X – B (Physics)</td><td>XII – Sci</td><td>—</td><td>X – A</td></tr>
-        <tr><td>Friday</td><td>—</td><td>IX – A</td><td>X – B</td><td>XII – Sci</td></tr>
+      <div class="card-header"><h3>Class X – A Students</h3></div>
+      <table><tr><th>Name</th><th>Roll No</th><th>Adm No</th><th>Class</th></tr>
+        <tr><td>Arsh Raj</td><td>13</td><td>12345</td><td>X – A</td></tr>
+        <tr><td>Samyak Mishra</td><td>23</td><td>5678</td><td>X – A</td></tr>
+        <tr><td>Tejas Vinayak</td><td>43</td><td>8765</td><td>X – A</td></tr>
       </table>
     </div>
   </div>
@@ -107,124 +111,266 @@ tr:hover td{background:#fafbff;color:var(--navy);}
   <!-- MARKS -->
   <div class="page" id="page-marks">
     <div class="card">
-      <div class="card-header"><h3>Enter Marks</h3></div>
+      <div class="card-header"><h3>Enter Student Marks</h3></div>
+      <div class="toast" id="marksToast">✅ Marks saved!</div>
       <div class="form-row">
-        <div class="form-group"><label>Select Class</label>
-          <select id="marksClass"><option>X – A</option><option>X – B</option><option>XII – Science</option><option>IX – A</option></select>
-        </div>
+        <div class="form-group"><label>Student</label>
+          <select id="mStudent">
+            <option value="arsh">Arsh Raj (Roll 13)</option>
+            <option value="samyak">Samyak Mishra (Roll 23)</option>
+            <option value="tejas">Tejas Vinayak (Roll 43)</option>
+          </select></div>
+        <div class="form-group"><label>Subject</label><input type="text" id="mSubject" placeholder="e.g. Mathematics"/></div>
         <div class="form-group"><label>Exam Type</label>
-          <select id="marksExam"><option>Unit Test 1</option><option>Mid-Term</option><option>Unit Test 2</option><option>Final Exam</option></select>
-        </div>
-        <div class="form-group"><label>Subject</label>
-          <input type="text" value="Physics" id="marksSubject"/>
-        </div>
+          <select id="mExam"><option>Unit Test 1</option><option>Unit Test 2</option><option>Mid-Term</option><option>Final Exam</option></select></div>
       </div>
+      <div class="form-row-2">
+        <div class="form-group"><label>Marks Obtained</label><input type="number" id="mObtained" min="0" max="1000" placeholder="e.g. 85"/></div>
+        <div class="form-group"><label>Total Marks</label><input type="number" id="mTotal" value="100" min="1"/></div>
+      </div>
+      <button class="btn-sm btn-gold" onclick="saveMarks()">Save Marks</button>
     </div>
     <div class="card">
-      <div class="card-header"><h3>Student Marks Sheet</h3><button class="btn-sm btn-gold" onclick="saveMarks()">Save Marks</button></div>
-      <table id="marksTable">
-        <tr><th>Roll No</th><th>Student Name</th><th>Marks Obtained</th><th>Total Marks</th><th>Grade</th></tr>
-        <tr><td>SA001</td><td>Priya Sharma</td><td><input type="number" min="0" max="100" value="95" style="width:70px;padding:4px 8px;border:1px solid var(--light-gray);border-radius:6px;" onchange="calcGrade(this)"/></td><td>100</td><td><span class="badge badge-green">A+</span></td></tr>
-        <tr><td>SB002</td><td>Aryan Singh</td><td><input type="number" min="0" max="100" value="88" style="width:70px;padding:4px 8px;border:1px solid var(--light-gray);border-radius:6px;" onchange="calcGrade(this)"/></td><td>100</td><td><span class="badge badge-green">A</span></td></tr>
-        <tr><td>SC003</td><td>Sneha Kumari</td><td><input type="number" min="0" max="100" value="76" style="width:70px;padding:4px 8px;border:1px solid var(--light-gray);border-radius:6px;" onchange="calcGrade(this)"/></td><td>100</td><td><span class="badge badge-gold">B+</span></td></tr>
-        <tr><td>SD004</td><td>Rohit Verma</td><td><input type="number" min="0" max="100" value="62" style="width:70px;padding:4px 8px;border:1px solid var(--light-gray);border-radius:6px;" onchange="calcGrade(this)"/></td><td>100</td><td><span class="badge badge-gold">B</span></td></tr>
-      </table>
+      <div class="card-header"><h3>All Marks Entered</h3></div>
+      <div id="allMarksArea"><div class="loading">Loading…</div></div>
     </div>
   </div>
 
-  <!-- STUDENTS -->
-  <div class="page" id="page-students">
+  <!-- ATTENDANCE -->
+  <div class="page" id="page-attendance">
     <div class="card">
-      <div class="card-header"><h3>My Students</h3>
-        <select style="border:1px solid var(--light-gray);border-radius:8px;padding:7px 12px;font-size:0.85rem;">
-          <option>X – A</option><option>X – B</option><option>XII – Science</option>
-        </select>
+      <div class="card-header">
+        <h3>Mark Attendance</h3>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <input type="date" id="attDate" style="border:1px solid var(--light-gray);border-radius:8px;padding:7px 12px;font-size:0.85rem;"/>
+          <button class="btn-sm btn-gold" onclick="saveAttendance()">Save</button>
+        </div>
       </div>
-      <table>
-        <tr><th>Roll No</th><th>Name</th><th>Attendance %</th><th>Last Marks</th><th>Performance</th></tr>
-        <tr><td>SA001</td><td>Priya Sharma</td><td>98%</td><td>95/100</td><td><span class="badge badge-green">Excellent</span></td></tr>
-        <tr><td>SB002</td><td>Aryan Singh</td><td>95%</td><td>88/100</td><td><span class="badge badge-green">Very Good</span></td></tr>
-        <tr><td>SC003</td><td>Sneha Kumari</td><td>90%</td><td>76/100</td><td><span class="badge badge-gold">Good</span></td></tr>
-        <tr><td>SD004</td><td>Rohit Verma</td><td>82%</td><td>62/100</td><td><span class="badge badge-gold">Average</span></td></tr>
-        <tr><td>SE005</td><td>Kiran Jha</td><td>72%</td><td>55/100</td><td><span class="badge badge-red">Needs Attention</span></td></tr>
-      </table>
+      <div class="toast" id="attToast">✅ Attendance saved!</div>
+      <div id="attRows">
+        <div class="attend-row">
+          <div><div class="attend-name">Arsh Raj</div><div class="attend-sub">Roll: 13 | Adm: 12345</div></div>
+          <div class="att-wrap">
+            <button class="att-btn att-p selected" id="att-arsh-P" onclick="pickAtt('arsh','P')">Present</button>
+            <button class="att-btn att-a" id="att-arsh-A" onclick="pickAtt('arsh','A')">Absent</button>
+          </div>
+        </div>
+        <div class="attend-row">
+          <div><div class="attend-name">Samyak Mishra</div><div class="attend-sub">Roll: 23 | Adm: 5678</div></div>
+          <div class="att-wrap">
+            <button class="att-btn att-p selected" id="att-samyak-P" onclick="pickAtt('samyak','P')">Present</button>
+            <button class="att-btn att-a" id="att-samyak-A" onclick="pickAtt('samyak','A')">Absent</button>
+          </div>
+        </div>
+        <div class="attend-row">
+          <div><div class="attend-name">Tejas Vinayak</div><div class="attend-sub">Roll: 43 | Adm: 8765</div></div>
+          <div class="att-wrap">
+            <button class="att-btn att-p selected" id="att-tejas-P" onclick="pickAtt('tejas','P')">Present</button>
+            <button class="att-btn att-a" id="att-tejas-A" onclick="pickAtt('tejas','A')">Absent</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3>Attendance Log</h3></div>
+      <div id="attLogArea"><div class="loading">Loading…</div></div>
     </div>
   </div>
 
   <!-- REMARKS -->
   <div class="page" id="page-remarks">
     <div class="card">
-      <div class="card-header"><h3>Add Student Remark</h3></div>
+      <div class="card-header"><h3>Post Remark</h3></div>
+      <div class="toast" id="remToast">✅ Remark posted!</div>
       <div class="form-row">
-        <div class="form-group"><label>Select Student</label>
-          <select id="remarkStudent">
-            <option>Priya Sharma (SA001)</option>
-            <option>Aryan Singh (SB002)</option>
-            <option>Sneha Kumari (SC003)</option>
-            <option>Rohit Verma (SD004)</option>
-          </select>
-        </div>
-        <div class="form-group"><label>Remark Type</label>
-          <select id="remarkType"><option>Academic</option><option>Behaviour</option><option>Attendance</option><option>Co-curricular</option></select>
-        </div>
-        <div class="form-group"><label>Date</label><input type="date" id="remarkDate"/></div>
+        <div class="form-group"><label>Student</label>
+          <select id="rStudent"><option value="arsh">Arsh Raj</option><option value="samyak">Samyak Mishra</option><option value="tejas">Tejas Vinayak</option></select></div>
+        <div class="form-group"><label>Type</label>
+          <select id="rType"><option>Academic</option><option>Behaviour</option><option>Attendance</option><option>Co-curricular</option></select></div>
+        <div class="form-group"><label>Date</label><input type="date" id="rDate"/></div>
       </div>
-      <div class="form-group"><label>Remark</label><textarea id="remarkText" rows="4" placeholder="Write detailed remark about the student..."></textarea></div>
+      <div class="form-group"><label>Remark</label><textarea id="rText" rows="4" placeholder="Write remark…"></textarea></div>
       <button class="btn-sm btn-gold" onclick="postRemark()">Post Remark</button>
     </div>
-    <div class="card" id="remarksList">
-      <div class="card-header"><h3>Recent Remarks</h3></div>
-      <table>
-        <tr><th>Student</th><th>Type</th><th>Remark</th><th>Date</th></tr>
-        <tr><td>Kiran Jha</td><td><span class="badge badge-red">Attendance</span></td><td>Frequently absent. Parents should be informed.</td><td>May 14</td></tr>
-        <tr><td>Priya Sharma</td><td><span class="badge badge-green">Academic</span></td><td>Excellent performance in unit test. Keep it up!</td><td>May 10</td></tr>
-      </table>
+    <div class="card">
+      <div class="card-header"><h3>All Remarks</h3></div>
+      <div id="allRemArea"><div class="loading">Loading…</div></div>
     </div>
   </div>
 
+  <!-- STUDENTS SUMMARY -->
+  <div class="page" id="page-students">
+    <div class="card">
+      <div class="card-header"><h3>Student Summary</h3></div>
+      <div id="stuSummary"><div class="loading">Loading…</div></div>
+    </div>
+  </div>
 </div>
 </div>
 
 <script>
-// Auth: role stored by login page
+const TEACHER = sessionStorage.getItem('sfs_teacher_name') || 'Teacher';
+document.getElementById('teacherBadge').textContent = '👨‍🏫 ' + TEACHER.toUpperCase();
+document.getElementById('sideTeacherName').textContent = TEACHER;
 document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-document.getElementById('remarkDate').valueAsDate = new Date();
+document.getElementById('attDate').valueAsDate = new Date();
+document.getElementById('rDate').valueAsDate = new Date();
+
+const SNAMES = {arsh:'Arsh Raj', samyak:'Samyak Mishra', tejas:'Tejas Vinayak'};
+
+// Attendance state (which button is selected per student)
+const attSel = {arsh:'P', samyak:'P', tejas:'P'};
+
+function pickAtt(sid, val){
+  attSel[sid] = val;
+  ['P','A'].forEach(v=>{
+    const btn = document.getElementById(`att-${sid}-${v}`);
+    if(btn) btn.classList.toggle('selected', v===val);
+  });
+}
+
+function getGrade(obt,tot){
+  const p=(obt/tot)*100;
+  if(p>=90)return{g:'A+',c:'badge-green'};
+  if(p>=80)return{g:'A',c:'badge-green'};
+  if(p>=70)return{g:'B+',c:'badge-gold'};
+  if(p>=60)return{g:'B',c:'badge-gold'};
+  if(p>=50)return{g:'C',c:'badge-gold'};
+  return{g:'F',c:'badge-red'};
+}
+
+function toast(id){ const e=document.getElementById(id); e.style.display='block'; setTimeout(()=>e.style.display='none',2500); }
+
+// ── MARKS ──
+async function saveMarks(){
+  const sid=document.getElementById('mStudent').value;
+  const subj=document.getElementById('mSubject').value.trim();
+  const exam=document.getElementById('mExam').value;
+  const obt=parseInt(document.getElementById('mObtained').value);
+  const tot=parseInt(document.getElementById('mTotal').value)||100;
+  if(!subj||isNaN(obt)){alert('Fill Subject and Marks Obtained.');return;}
+  await fbPush(`marks/${sid}`, {subject:subj, exam, obtained:obt, total:tot, teacher:TEACHER, date:new Date().toLocaleDateString('en-IN')});
+  document.getElementById('mSubject').value='';
+  document.getElementById('mObtained').value='';
+  toast('marksToast');
+  renderMarks();
+}
+
+async function renderMarks(){
+  const area = document.getElementById('allMarksArea');
+  area.innerHTML='<div class="loading">Loading…</div>';
+  let html='<table><tr><th>Student</th><th>Subject</th><th>Exam</th><th>Marks</th><th>Grade</th><th>By</th><th>Del</th></tr>';
+  let any=false;
+  for(const sid of ['arsh','samyak','tejas']){
+    const data = await fbGet(`marks/${sid}`);
+    if(data){ Object.entries(data).forEach(([key,m])=>{
+      const {g,c}=getGrade(m.obtained,m.total);
+      html+=`<tr><td>${SNAMES[sid]}</td><td>${m.subject}</td><td>${m.exam}</td><td>${m.obtained}/${m.total}</td><td><span class="badge ${c}">${g}</span></td><td>${m.teacher||''}</td><td><button class="btn-sm btn-red" onclick="delMark('${sid}','${key}')">✕</button></td></tr>`;
+      any=true;
+    }); }
+  }
+  area.innerHTML = any ? html+'</table>' : '<div class="loading">No marks entered yet.</div>';
+}
+
+async function delMark(sid,key){ await fbDelete(`marks/${sid}/${key}`); renderMarks(); }
+
+// ── ATTENDANCE ──
+async function saveAttendance(){
+  const date=document.getElementById('attDate').value;
+  if(!date){alert('Select a date.');return;}
+  // date as path key - replace dots/slashes
+  const safeDate = date.replace(/\//g,'-');
+  await fbSet(`attendance/${safeDate}`, {arsh:attSel.arsh, samyak:attSel.samyak, tejas:attSel.tejas, savedBy:TEACHER});
+  toast('attToast');
+  renderAttLog();
+}
+
+async function renderAttLog(){
+  const area=document.getElementById('attLogArea');
+  area.innerHTML='<div class="loading">Loading…</div>';
+  const data=await fbGet('attendance');
+  if(!data||!Object.keys(data).length){area.innerHTML='<div class="loading">No attendance recorded yet.</div>';return;}
+  let html='<table><tr><th>Date</th><th>Arsh Raj</th><th>Samyak Mishra</th><th>Tejas Vinayak</th><th>By</th></tr>';
+  const badge=s=>s==='P'?'<span class="badge badge-green">Present</span>':'<span class="badge badge-red">Absent</span>';
+  Object.entries(data).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([d,v])=>{
+    html+=`<tr><td>${d}</td><td>${badge(v.arsh)}</td><td>${badge(v.samyak)}</td><td>${badge(v.tejas)}</td><td>${v.savedBy||''}</td></tr>`;
+  });
+  area.innerHTML=html+'</table>';
+}
+
+// ── REMARKS ──
+async function postRemark(){
+  const sid=document.getElementById('rStudent').value;
+  const type=document.getElementById('rType').value;
+  const text=document.getElementById('rText').value.trim();
+  const date=document.getElementById('rDate').value;
+  if(!text){alert('Write a remark.');return;}
+  await fbPush(`remarks/${sid}`, {type, text, date, teacher:TEACHER});
+  document.getElementById('rText').value='';
+  toast('remToast');
+  renderRemarks();
+}
+
+async function renderRemarks(){
+  const area=document.getElementById('allRemArea');
+  area.innerHTML='<div class="loading">Loading…</div>';
+  let html='<table><tr><th>Student</th><th>Type</th><th>Remark</th><th>Date</th><th>By</th><th>Del</th></tr>';
+  let any=false;
+  for(const sid of ['arsh','samyak','tejas']){
+    const data=await fbGet(`remarks/${sid}`);
+    if(data){ Object.entries(data).forEach(([key,r])=>{
+      html+=`<tr><td>${SNAMES[sid]}</td><td><span class="badge badge-gold">${r.type}</span></td><td>${r.text}</td><td>${r.date}</td><td>${r.teacher||''}</td><td><button class="btn-sm btn-red" onclick="delRemark('${sid}','${key}')">✕</button></td></tr>`;
+      any=true;
+    }); }
+  }
+  area.innerHTML=any?html+'</table>':'<div class="loading">No remarks yet.</div>';
+}
+
+async function delRemark(sid,key){ await fbDelete(`remarks/${sid}/${key}`); renderRemarks(); }
+
+// ── STUDENT SUMMARY ──
+async function renderStudentSummary(){
+  const area=document.getElementById('stuSummary');
+  area.innerHTML='<div class="loading">Loading…</div>';
+  const attData=await fbGet('attendance')||{};
+  const totalDays=Object.keys(attData).length;
+  let html='<table><tr><th>Name</th><th>Roll</th><th>Marks Entries</th><th>Attendance</th><th>Remarks</th></tr>';
+  for(const sid of ['arsh','samyak','tejas']){
+    const marks=await fbGet(`marks/${sid}`)||{};
+    const rems=await fbGet(`remarks/${sid}`)||{};
+    const present=Object.values(attData).filter(v=>v[sid]==='P').length;
+    const attStr=totalDays>0?`${present}/${totalDays} (${Math.round(present/totalDays*100)}%)`:'—';
+    html+=`<tr><td>${SNAMES[sid]}</td><td>${{arsh:13,samyak:23,tejas:43}[sid]}</td><td>${Object.keys(marks).length}</td><td>${attStr}</td><td>${Object.keys(rems).length}</td></tr>`;
+  }
+  area.innerHTML=html+'</table>';
+}
+
+// ── DASHBOARD STATS ──
+async function updateDash(){
+  let mc=0;
+  for(const sid of ['arsh','samyak','tejas']){ const d=await fbGet(`marks/${sid}`)||{}; mc+=Object.keys(d).length; }
+  document.getElementById('dash-marks').textContent=mc;
+  let rc=0;
+  for(const sid of ['arsh','samyak','tejas']){ const d=await fbGet(`remarks/${sid}`)||{}; rc+=Object.keys(d).length; }
+  document.getElementById('dash-rem').textContent=rc;
+}
 
 function showPage(id,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(el) el.classList.add('active');
-  const titles={dashboard:'Teacher Dashboard',marks:'Enter Marks',students:'Student Details',remarks:'Remarks'};
+  const titles={dashboard:'Teacher Dashboard',marks:'Enter Marks',attendance:'Mark Attendance',remarks:'Remarks',students:'Student Summary'};
   document.getElementById('pageTitle').textContent=titles[id]||id;
+  if(id==='marks') renderMarks();
+  if(id==='attendance') renderAttLog();
+  if(id==='remarks') renderRemarks();
+  if(id==='students') renderStudentSummary();
+  if(id==='dashboard') updateDash();
 }
 
-function calcGrade(input){
-  const v=parseInt(input.value);
-  let g='F',cls='badge-red';
-  if(v>=90){g='A+';cls='badge-green';}
-  else if(v>=80){g='A';cls='badge-green';}
-  else if(v>=70){g='B+';cls='badge-gold';}
-  else if(v>=60){g='B';cls='badge-gold';}
-  else if(v>=50){g='C';cls='badge-gold';}
-  const td=input.closest('tr').querySelector('td:last-child');
-  td.innerHTML=`<span class="badge ${cls}">${g}</span>`;
-}
-
-function saveMarks(){alert('Marks saved successfully!');}
-
-function postRemark(){
-  const s=document.getElementById('remarkStudent').value, t=document.getElementById('remarkType').value, r=document.getElementById('remarkText').value, d=document.getElementById('remarkDate').value;
-  if(!r){alert('Please write a remark.');return;}
-  const table=document.querySelector('#remarksList table');
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td>${s.split('(')[0].trim()}</td><td><span class="badge badge-gold">${t}</span></td><td>${r}</td><td>${d}</td>`;
-  table.appendChild(tr);
-  document.getElementById('remarkText').value='';
-  alert('Remark posted!');
-}
-
-function logout(){localStorage.removeItem('sfs_role');window.location.href='login.html';}
+function logout(){ sessionStorage.clear(); window.location.href='login.html'; }
+updateDash();
 </script>
 </body>
 </html>

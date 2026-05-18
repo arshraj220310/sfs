@@ -125,11 +125,10 @@ tr:hover td { background: #fafbff; color: var(--navy); }
     <div class="card">
       <div class="card-header"><h3>Recent Student Registrations</h3><button class="btn-sm btn-gold" onclick="showPage('students',document.querySelector('.menu-item:nth-child(3)'))">View All</button></div>
       <table>
-        <tr><th>Name</th><th>Class</th><th>Roll No</th><th>Admitted</th><th>Status</th></tr>
-        <tr><td>Aarav Sharma</td><td>V – A</td><td>SA001</td><td>Apr 10, 2026</td><td><span class="badge badge-green">Active</span></td></tr>
-        <tr><td>Priya Singh</td><td>VIII – B</td><td>SB002</td><td>Apr 12, 2026</td><td><span class="badge badge-green">Active</span></td></tr>
-        <tr><td>Rohit Kumar</td><td>X – A</td><td>SC003</td><td>Apr 15, 2026</td><td><span class="badge badge-green">Active</span></td></tr>
-        <tr><td>Ananya Jha</td><td>III – C</td><td>SD004</td><td>Apr 18, 2026</td><td><span class="badge badge-blue">Pending</span></td></tr>
+        <tr><th>Name</th><th>Class</th><th>Roll No</th><th>Adm No</th><th>Status</th></tr>
+        <tr><td>Arsh Raj</td><td>X – A</td><td>13</td><td>12345</td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td>Samyak Mishra</td><td>X – A</td><td>23</td><td>5678</td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td>Tejas Vinayak</td><td>X – A</td><td>43</td><td>8765</td><td><span class="badge badge-green">Active</span></td></tr>
       </table>
     </div>
   </div>
@@ -154,9 +153,9 @@ tr:hover td { background: #fafbff; color: var(--navy); }
       <div class="card-header"><h3>Student Records</h3></div>
       <table id="studentTable">
         <tr><th>Name</th><th>Roll No</th><th>Class</th><th>Parent</th><th>Contact</th><th>Action</th></tr>
-        <tr><td>Priya Sharma</td><td>SA001</td><td>X – A</td><td>Raju Sharma</td><td>9876543210</td><td><button class="btn-sm btn-red" onclick="this.closest('tr').remove()">Remove</button></td></tr>
-        <tr><td>Aryan Singh</td><td>SB002</td><td>XII – Science</td><td>Suresh Singh</td><td>9876543211</td><td><button class="btn-sm btn-red" onclick="this.closest('tr').remove()">Remove</button></td></tr>
-        <tr><td>Sneha Kumari</td><td>SC003</td><td>X – B</td><td>Vijay Kumar</td><td>9876543212</td><td><button class="btn-sm btn-red" onclick="this.closest('tr').remove()">Remove</button></td></tr>
+        <tr><td>Arsh Raj</td><td>13</td><td>X – A</td><td>—</td><td>—</td><td><span class="badge badge-green">Portal Active</span></td></tr>
+        <tr><td>Samyak Mishra</td><td>23</td><td>X – A</td><td>—</td><td>—</td><td><span class="badge badge-green">Portal Active</span></td></tr>
+        <tr><td>Tejas Vinayak</td><td>43</td><td>X – A</td><td>—</td><td>—</td><td><span class="badge badge-green">Portal Active</span></td></tr>
       </table>
     </div>
   </div>
@@ -198,10 +197,9 @@ tr:hover td { background: #fafbff; color: var(--navy); }
         </div>
       </div>
       <div id="attendanceList">
-        <div class="attend-row"><div><div class="attend-name">Priya Sharma</div><div class="attend-class">Roll: SA001</div></div><div class="attend-toggle"><button class="att-btn att-present selected" onclick="markAtt(this,'P')">Present</button><button class="att-btn att-absent" onclick="markAtt(this,'A')">Absent</button></div></div>
-        <div class="attend-row"><div><div class="attend-name">Aryan Singh</div><div class="attend-class">Roll: SB002</div></div><div class="attend-toggle"><button class="att-btn att-present selected" onclick="markAtt(this,'P')">Present</button><button class="att-btn att-absent" onclick="markAtt(this,'A')">Absent</button></div></div>
-        <div class="attend-row"><div><div class="attend-name">Sneha Kumari</div><div class="attend-class">Roll: SC003</div></div><div class="attend-toggle"><button class="att-btn att-present" onclick="markAtt(this,'P')">Present</button><button class="att-btn att-absent selected" onclick="markAtt(this,'A')">Absent</button></div></div>
-        <div class="attend-row"><div><div class="attend-name">Rohit Verma</div><div class="attend-class">Roll: SD004</div></div><div class="attend-toggle"><button class="att-btn att-present selected" onclick="markAtt(this,'P')">Present</button><button class="att-btn att-absent" onclick="markAtt(this,'A')">Absent</button></div></div>
+        <div class="attend-row"><div><div class="attend-name">Arsh Raj</div><div class="attend-class">Roll: 13 | Adm: 12345</div></div><div class="attend-toggle"><button class="att-btn att-present selected" onclick="markAtt(this,'P')">Present</button><button class="att-btn att-absent" onclick="markAtt(this,'A')">Absent</button></div></div>
+        <div class="attend-row"><div><div class="attend-name">Samyak Mishra</div><div class="attend-class">Roll: 23 | Adm: 5678</div></div><div class="attend-toggle"><button class="att-btn att-present selected" onclick="markAtt(this,'P')">Present</button><button class="att-btn att-absent" onclick="markAtt(this,'A')">Absent</button></div></div>
+        <div class="attend-row"><div><div class="attend-name">Tejas Vinayak</div><div class="attend-class">Roll: 43 | Adm: 8765</div></div><div class="attend-toggle"><button class="att-btn att-present selected" onclick="markAtt(this,'P')">Present</button><button class="att-btn att-absent" onclick="markAtt(this,'A')">Absent</button></div></div>
       </div>
     </div>
   </div>
@@ -242,11 +240,22 @@ tr:hover td { background: #fafbff; color: var(--navy); }
 </div>
 
 <script>
-// Auth guard
-// Auth: role stored by login page
-
 document.getElementById('dateStr').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 document.getElementById('attDate').valueAsDate = new Date();
+
+function getDB(k){ try{ return JSON.parse(localStorage.getItem(k))||[]; }catch(e){ return []; } }
+function setDB(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
+
+// Restore persisted notices on load
+(function(){
+  const notices=getDB('sfs_notices_admin');
+  const board=document.getElementById('noticeBoard');
+  notices.forEach(n=>{
+    const div=document.createElement('div'); div.className='notice-item';
+    div.innerHTML=`<div class="notice-dot"></div><div class="notice-content"><h4>${n.title}</h4><p>${n.content}</p></div><span class="notice-date">${n.date}</span>`;
+    board.appendChild(div);
+  });
+})();
 
 function showPage(id, el){
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -291,6 +300,9 @@ function postNotice(){
   const div=document.createElement('div'); div.className='notice-item';
   div.innerHTML=`<div class="notice-dot"></div><div class="notice-content"><h4>${t}</h4><p>${c}</p></div><span class="notice-date">${d}</span>`;
   document.getElementById('noticeBoard').appendChild(div);
+  const notices=getDB('sfs_notices_admin');
+  notices.push({title:t,content:c,date:d});
+  setDB('sfs_notices_admin',notices);
   document.getElementById('noticeTitle').value=''; document.getElementById('noticeContent').value='';
   alert('Notice posted!');
 }

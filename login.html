@@ -17,7 +17,7 @@ body { background: linear-gradient(135deg, var(--navy) 0%, #1a2d6b 50%, #0d1b3e 
 .login-logo h1 { font-size: 1.5rem; color: var(--white); margin-bottom: 4px; }
 .login-logo p { color: var(--gold); font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; }
 .role-tabs { display: flex; background: rgba(255,255,255,0.06); border-radius: 12px; padding: 4px; margin-bottom: 28px; border: 1px solid rgba(201,168,76,0.15); }
-.role-tab { flex: 1; padding: 10px; text-align: center; border-radius: 9px; font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.55); cursor: pointer; transition: var(--transition); }
+.role-tab { flex: 1; padding: 10px 6px; text-align: center; border-radius: 9px; font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.55); cursor: pointer; transition: var(--transition); }
 .role-tab.active { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: var(--navy); }
 .login-card { background: rgba(255,255,255,0.07); backdrop-filter: blur(20px); border: 1px solid rgba(201,168,76,0.2); border-radius: var(--radius-lg); padding: 36px; }
 .login-card h2 { color: var(--white); font-size: 1.4rem; margin-bottom: 6px; }
@@ -45,9 +45,7 @@ body { background: linear-gradient(135deg, var(--navy) 0%, #1a2d6b 50%, #0d1b3e 
       <div class="sub">— Deoghar —</div>
     </div>
   </div>
-  <div class="nav-links">
-    <a href="index.html">← Back to Home</a>
-  </div>
+  <div class="nav-links"><a href="index.html">← Back to Home</a></div>
 </nav>
 
 <div class="login-page">
@@ -57,13 +55,11 @@ body { background: linear-gradient(135deg, var(--navy) 0%, #1a2d6b 50%, #0d1b3e 
       <h1>School Portal Login</h1>
       <p>St. Francis School • Deoghar</p>
     </div>
-
     <div class="role-tabs">
       <div class="role-tab active" onclick="setRole('admin')" id="tab-admin">🔑 Admin</div>
       <div class="role-tab" onclick="setRole('teacher')" id="tab-teacher">👨‍🏫 Teacher</div>
-      <div class="role-tab" onclick="setRole('parent')" id="tab-parent">👨‍👩‍👧 Parent</div>
+      <div class="role-tab" onclick="setRole('student')" id="tab-student">🎓 Student</div>
     </div>
-
     <div class="login-card">
       <h2 id="roleTitle">Administrator Login</h2>
       <div class="subtitle" id="roleSubtitle">Enter your admin credentials to access the dashboard</div>
@@ -86,10 +82,17 @@ body { background: linear-gradient(135deg, var(--navy) 0%, #1a2d6b 50%, #0d1b3e 
 
 <script>
 let currentRole = 'admin';
+
 const roles = {
-  admin:   { title:'Administrator Login',  sub:'Enter your admin credentials to access the dashboard',     user:'ADMIN',   pass:'0000', page:'admin.html',   hintU:'Hint: ADMIN',   hintP:'Hint: 0000' },
-  teacher: { title:'Teacher Login',        sub:'Enter your teacher credentials to access your portal',     user:'TEACHER', pass:'1111', page:'teacher.html', hintU:'Hint: TEACHER', hintP:'Hint: 1111' },
-  parent:  { title:'Parent Login',         sub:'Enter your parent credentials to view your child\'s info', user:'PARENTS', pass:'2222', page:'parent.html',  hintU:'Hint: PARENTS', hintP:'Hint: 2222' }
+  admin:   { title:'Administrator Login', sub:'Enter your admin credentials to access the dashboard', hintU:'Hint: ADMIN', hintP:'Hint: 0000' },
+  teacher: { title:'Teacher Login', sub:'Mr. Tapan → TAPAN | Mr. Vaskar → VASKAR  |  Password: 1111', hintU:'TAPAN or VASKAR', hintP:'Hint: 1111' },
+  student: { title:'Student Login', sub:'Username: ARSH / SAMYAK / TEJAS  |  Password: 1234', hintU:'ARSH / SAMYAK / TEJAS', hintP:'Hint: 1234' }
+};
+
+const STUDENT_MAP = {
+  arsh:   { id:'arsh',   name:'Arsh Raj',     roll:'13', admNo:'12345', cls:'Class X – A' },
+  samyak: { id:'samyak', name:'Samyak Mishra', roll:'23', admNo:'5678',  cls:'Class X – A' },
+  tejas:  { id:'tejas',  name:'Tejas Vinayak', roll:'43', admNo:'8765',  cls:'Class X – A' }
 };
 
 function setRole(r){
@@ -109,15 +112,31 @@ function setRole(r){
 function doLogin(){
   const u = document.getElementById('username').value.trim().toUpperCase();
   const p = document.getElementById('password').value.trim();
-  const d = roles[currentRole];
-  if(u === d.user && p === d.pass){
-    localStorage.setItem('sfs_role', currentRole);
-    window.location.href = d.page;
-  } else {
-    document.getElementById('errorMsg').style.display = 'block';
+  document.getElementById('errorMsg').style.display = 'none';
+
+  if(currentRole === 'admin'){
+    if(u === 'ADMIN' && p === '0000'){
+      sessionStorage.setItem('sfs_role','admin');
+      window.location.href = 'admin.html';
+    } else { document.getElementById('errorMsg').style.display='block'; }
+  }
+  else if(currentRole === 'teacher'){
+    const tMap = { TAPAN:'Mr. Tapan', VASKAR:'Mr. Vaskar' };
+    if(tMap[u] && p === '1111'){
+      sessionStorage.setItem('sfs_role','teacher');
+      sessionStorage.setItem('sfs_teacher_name', tMap[u]);
+      window.location.href = 'teacher.html';
+    } else { document.getElementById('errorMsg').style.display='block'; }
+  }
+  else if(currentRole === 'student'){
+    const key = u.toLowerCase();
+    if(STUDENT_MAP[key] && p === '1234'){
+      sessionStorage.setItem('sfs_role','student');
+      sessionStorage.setItem('sfs_student_id', key);
+      window.location.href = 'parent.html';
+    } else { document.getElementById('errorMsg').style.display='block'; }
   }
 }
-
 document.addEventListener('keydown', e => { if(e.key === 'Enter') doLogin(); });
 </script>
 </body>
